@@ -1,0 +1,44 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: "pretty(quote!(fn f() { #out }))"
+---
+fn f() {
+    {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        #[allow(unused_imports)]
+        use ::org::events as __semlex_root;
+        #[allow(dead_code)]
+        const __SEMLEX_SCOPE: __semlex_rt::Scope = __semlex_rt::Scope {
+            prefix: __semlex_reg::SCOPE_PREFIX,
+            name: ::core::env!("CARGO_PKG_NAME"),
+            version: ::core::env!("CARGO_PKG_VERSION"),
+            schema_url: __semlex_reg::SCHEMA_URL,
+        };
+        let __semlex_b = __semlex_root::session::start::builder();
+        const _: () = {
+            __semlex_attr::session::id.check_usable();
+        };
+        let __semlex_b = __semlex_b.with(__semlex_attr::session::id, id);
+        static __SEMLEX_SITE: __semlex_rt::EventSite = __semlex_rt::EventSite::new();
+        __semlex_b
+            .emit(
+                &__SEMLEX_SITE,
+                &__SEMLEX_SCOPE,
+                |__semlex_attrs| {
+                    #[allow(unused_imports)]
+                    use __semlex_rt::{FieldKnown as _, FieldNone as _};
+                    __semlex_rt::tracing::event!(
+                        name : __semlex_root::session::start::EVENT_NAME,
+                        __semlex_rt::tracing::Level::INFO, { "session.id" = (&&
+                        __semlex_rt::FieldProbe(& __semlex_attr::session::id,
+                        __semlex_attrs)).__semlex_field() }
+                    );
+                },
+            )
+    }
+}

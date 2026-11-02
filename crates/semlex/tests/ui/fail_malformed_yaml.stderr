@@ -1,0 +1,10 @@
+error: can't parse registry: error: line 2 column 13: unclosed bracket '['
+        --> <input>:2:13
+         |
+       1 | file_format: resolved/2.0
+       2 | schema_url: [unclosed
+         |             ^ unclosed bracket '['
+ --> tests/ui/fail_malformed_yaml.rs:1:19
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/malformed.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

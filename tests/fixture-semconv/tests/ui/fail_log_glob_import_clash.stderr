@@ -1,0 +1,27 @@
+error[E0659]: `warn` is ambiguous
+ --> tests/ui/fail_log_glob_import_clash.rs:5:5
+  |
+5 |     warn!(http.route: "/", "glob imports of both make `warn!` ambiguous");
+  |     ^^^^ ambiguous name
+  |
+  = note: ambiguous because of multiple glob imports of a name in the same module
+note: `warn` could refer to the macro imported here
+ --> tests/ui/fail_log_glob_import_clash.rs:1:5
+  |
+1 | use fixture_semconv::*;
+  |     ^^^^^^^^^^^^^^^^^^
+  = help: consider adding an explicit import of `warn` to disambiguate
+note: `warn` could also refer to the macro imported here
+ --> tests/ui/fail_log_glob_import_clash.rs:2:5
+  |
+2 | use tracing::*;
+  |     ^^^^^^^^^^
+  = help: consider adding an explicit import of `warn` to disambiguate
+
+warning: unused import: `tracing`
+ --> tests/ui/fail_log_glob_import_clash.rs:2:5
+  |
+2 | use tracing::*;
+  |     ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default

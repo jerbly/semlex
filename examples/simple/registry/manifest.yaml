@@ -1,0 +1,9 @@
+file_format: definition_manifest/2.0
+schema_url: https://semlex.example/schemas/simple/1.0.0
+description: The simple example's local registry.
+stability: development
+dependencies:
+  # The upstream: attributes are taken from it with `ref:`.
+  - name: otel
+    schema_url: https://opentelemetry.io/schemas/1.44.0
+    registry_path: https://github.com/open-telemetry/semantic-conventions.git@v1.44.0[model]

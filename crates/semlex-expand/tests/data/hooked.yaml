@@ -1,0 +1,35 @@
+# Structured annotations for custom-macro hook tests.
+file_format: resolved/2.0
+schema_url: https://example.com/schemas/1.0.0
+attribute_catalog:
+- key: http.route
+  type: string
+  brief: Route.
+  stability: stable
+  annotations:
+    org:
+      owner: web
+registry:
+  attributes: [0]
+  attribute_groups: []
+  spans: []
+  metrics:
+  - name: http.server.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 0
+      requirement_level: required
+    brief: Duration.
+    stability: stable
+    annotations:
+      org:
+        slo:
+          objective: 0.99
+          threshold: 0.5
+  events: []
+  entities: []
+refinements:
+  spans: []
+  metrics: []
+  events: []

@@ -1,0 +1,271 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: "format!(\"{}\\n// …\\n{}\", &text[start..end], &text[metric..metric_end])"
+---
+pub mod attr_types {
+    const _: () = ::semlex::handlers::sensitivity::__MARK_THIS_MODULE_WITH_SEMLEX_HANDLER;
+    const _: () = crate::annotations::case::__MARK_THIS_MODULE_WITH_SEMLEX_HANDLER;
+    /// Timeout (Rust type override).
+    #[derive(Clone, Copy, Debug)]
+    pub struct request_timeout;
+    impl ::semlex::Attribute for request_timeout {
+        const KEY: &'static str = "request.timeout";
+        type Kind = ::semlex::kind::Typed<
+            ::semlex::kind::DoubleValue,
+            std::time::Duration,
+        >;
+    }
+    impl request_timeout {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Literals can't be checked further; the value check reports the type.
+        pub const fn check_literal<T>(&self, value: T) {
+            ::std::mem::forget(value)
+        }
+        /// Passes a literal through to the value check.
+        pub const fn literal<T>(&self, value: T) -> T {
+            value
+        }
+    }
+    /// Tenant code (user handler).
+    #[derive(Clone, Copy, Debug)]
+    pub struct tenant_code;
+    impl ::semlex::Attribute for tenant_code {
+        const KEY: &'static str = "tenant.code";
+        type Kind = crate::annotations::case::Kind<::semlex::kind::StringValue>;
+        fn apply(&self, value: ::semlex::Value) -> ::semlex::Value {
+            crate::annotations::case::apply(value, "upper")
+        }
+    }
+    impl tenant_code {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Compile-time check of a literal value.
+        #[allow(unused_variables)]
+        pub const fn check_literal(&self, value: &str) {
+            crate::annotations::case::check_literal(value, "upper");
+        }
+        /// A checked literal as a value.
+        pub const fn literal(&self, value: &'static str) -> &'static str {
+            value
+        }
+    }
+    /// URL path (unbounded).
+    #[derive(Clone, Copy, Debug)]
+    pub struct url_path;
+    impl ::semlex::Attribute for url_path {
+        const KEY: &'static str = "url.path";
+        type Kind = ::semlex::kind::StringValue;
+    }
+    impl url_path {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {
+            panic!(
+                "`url.path` is unbounded (annotation `cardinality: unbounded`) and can't be an attribute of a metric"
+            )
+        }
+        /// Literals can't be checked further; the value check reports the type.
+        pub const fn check_literal<T>(&self, value: T) {
+            ::std::mem::forget(value)
+        }
+        /// A string literal as a value, uncopied; other literals pass through.
+        pub fn literal<T: ::semlex::__private::StringLiteral>(
+            &self,
+            value: T,
+        ) -> T::Out {
+            value.literal()
+        }
+    }
+    /// User email (PII, with the user handler too).
+    #[derive(Clone, Copy, Debug)]
+    pub struct user_email;
+    impl ::semlex::Attribute for user_email {
+        const KEY: &'static str = "user.email";
+        type Kind = crate::annotations::case::Kind<
+            ::semlex::handlers::sensitivity::Kind<::semlex::kind::StringValue>,
+        >;
+        fn apply(&self, value: ::semlex::Value) -> ::semlex::Value {
+            crate::annotations::case::apply(
+                ::semlex::handlers::sensitivity::apply(value, "pii"),
+                "upper",
+            )
+        }
+    }
+    impl user_email {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Compile-time check of a literal value.
+        #[allow(unused_variables)]
+        pub const fn check_literal(&self, value: &str) {
+            ::semlex::handlers::sensitivity::check_literal(value, "pii");
+            crate::annotations::case::check_literal(value, "upper");
+        }
+        /// A checked literal as a value.
+        pub const fn literal(&self, value: &'static str) -> &'static str {
+            value
+        }
+    }
+}
+
+// …
+pub mod requests {
+        #[diagnostic::on_unimplemented(
+            message = "`{A}` is not an attribute of metric `requests`",
+            label = "not an attribute of this metric",
+            note = "metric `requests` defines: `tenant.code`, `url.path`. Use one of those, or add this attribute to the metric in the registry (attribute types are named after their keys with `.` as `_`)"
+        )]
+        /// Membership: implemented by the builder for each member attribute.
+        pub trait With<A> {
+            /// The builder after setting `A`.
+            type Out;
+            #[doc(hidden)]
+            fn advance(self) -> Self::Out;
+        }
+        /// The builder's check state. Bounds on it that never hold carry
+        /// attribute-specific errors.
+        #[doc(hidden)]
+        pub struct Checked;
+        /// No attribute: a second `With` candidate, so rustc never infers
+        /// the attribute type from a lone impl and always reports this
+        /// group's own messages.
+        #[doc(hidden)]
+        pub enum __NotAnAttribute {}
+        #[diagnostic::on_unimplemented(
+            message = "missing required attribute `tenant.code` on metric `requests`",
+            label = "`tenant.code` is required here",
+            note = "add `tenant.code: <value>` to the `metric!` attributes"
+        )]
+        /// Requirement: `tenant.code` is set.
+        pub trait Required_tenant_code {}
+        impl Required_tenant_code for ::semlex::Set {}
+        /// Requests.
+        pub struct Builder<P0 = ::semlex::Unset, C = Checked> {
+            attributes: ::std::vec::Vec<::semlex::__private::opentelemetry::KeyValue>,
+            phase: C,
+            _state: ::std::marker::PhantomData<(P0,)>,
+        }
+        /// Requests.
+        pub fn builder() -> Builder {
+            Builder {
+                attributes: ::std::vec::Vec::new(),
+                phase: Checked,
+                _state: ::std::marker::PhantomData,
+            }
+        }
+        impl<P0, C> Builder<P0, C> {
+            fn retype<P02>(self) -> Builder<P02, C> {
+                Builder {
+                    attributes: self.attributes,
+                    phase: self.phase,
+                    _state: ::std::marker::PhantomData,
+                }
+            }
+        }
+        impl<P0, C> ::semlex::__private::Members for Builder<P0, C> {
+            const MEMBERS: &'static [&'static str] = &["tenant.code", "url.path"];
+        }
+        impl<P0> Builder<P0, Checked> {
+            /// Sets a member attribute.
+            pub fn with<A: ::semlex::Attribute, V: ::semlex::IntoValue<A::Kind>>(
+                mut self,
+                attribute: A,
+                value: V,
+            ) -> <Self as With<A>>::Out
+            where
+                Self: With<A>,
+            {
+                self.attributes.push(::semlex::__private::kv(attribute, value));
+                self.advance()
+            }
+            /// Sets an `unregistered("…")` attribute (no membership check).
+            #[doc(hidden)]
+            pub fn with_unregistered(
+                mut self,
+                attribute: ::semlex::__private::opentelemetry::KeyValue,
+            ) -> Self {
+                self.attributes.push(attribute);
+                self
+            }
+        }
+        /// The metric name on the wire.
+        pub const NAME: &str = "requests";
+        /// Entity associations.
+        pub static ASSOCIATIONS: ::semlex::__private::Associations = ::semlex::__private::Associations {
+            kind: "metric",
+            signal: "requests",
+            expressions: &[],
+        };
+        /// The UCUM unit.
+        pub const UNIT: &str = "{request}";
+        /// Whether the metric is opt-in (enabled with `semlex::Config::enable`).
+        pub const OPT_IN: bool = false;
+        /// The OpenTelemetry instrument.
+        pub type Instrument = ::semlex::__private::opentelemetry::metrics::Counter<f64>;
+        /// What measurements this metric takes.
+        pub type Measure = ::semlex::__private::measure::F64;
+        /// Creates the instrument.
+        pub fn create(
+            meter: &::semlex::__private::opentelemetry::metrics::Meter,
+        ) -> Instrument {
+            meter.f64_counter(NAME).with_unit(UNIT).with_description("Requests.").build()
+        }
+        impl<P0, C> Builder<P0, C> {
+            /// Records a measurement with the attributes set (all required ones).
+            pub fn measure<V: ::semlex::__private::IntoMeasurement<Measure>>(
+                self,
+                value: V,
+                site: &'static ::semlex::__private::MetricSite<Instrument>,
+                scope: &::semlex::__private::Scope,
+            )
+            where
+                P0: Required_tenant_code,
+            {
+                if let Some(instrument) = site
+                    .instrument(NAME, OPT_IN, scope, &ASSOCIATIONS, create)
+                {
+                    instrument.add(value.into_measurement(), &self.attributes);
+                }
+            }
+        }
+        #[diagnostic::do_not_recommend]
+        impl<P0, C> With<__NotAnAttribute> for Builder<P0, C> {
+            type Out = Self;
+            fn advance(self) -> Self::Out {
+                self
+            }
+        }
+        #[diagnostic::do_not_recommend]
+        impl<P0, C> With<crate::attr_types::tenant_code> for Builder<P0, C> {
+            type Out = Builder<::semlex::Set, C>;
+            fn advance(self) -> Self::Out {
+                self.retype()
+            }
+        }
+        #[diagnostic::on_unimplemented(
+            message = "`url.path` is unbounded (annotation `cardinality: unbounded`) and can't be an attribute of metric `requests`",
+            label = "unbounded values make metric cardinality explode",
+            note = "use a bounded attribute, or mark `url.path` `cardinality: bounded` on this metric's reference in the registry if its values really are bounded here"
+        )]
+        #[doc(hidden)]
+        pub trait Unbounded_url_path {}
+        impl<P0, C: Unbounded_url_path> With<crate::attr_types::url_path>
+        for Builder<P0, C> {
+            type Out = Self;
+            fn advance(self) -> Self::Out {
+                self
+            }
+        }
+    }
+}

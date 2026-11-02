@@ -1,0 +1,5 @@
+file_format: manifest/2.0
+schema_url: https://semlex.example/schemas/0.1.0
+description: Fixture registry for semlex tests. Covers every V2 feature semlex consumes.
+stability: development
+resolved_registry_uri: https://semlex.example/schemas/0.1.0/resolved.yaml

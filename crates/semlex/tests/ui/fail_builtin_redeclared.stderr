@@ -1,0 +1,5 @@
+error: annotation namespace `sensitivity` is built in to semlex; remove it from `annotations`
+ --> tests/ui/fail_builtin_redeclared.rs:1:83
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { sensitivity: ignore, demo.case: ignore, demo.slo: i...
+  |                                                                                   ^^^^^^^^^^^

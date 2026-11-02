@@ -1,0 +1,63 @@
+error[E0277]: missing required attribute `demo.tenant.code` on span `http.server.request`
+ --> tests/ui/fail_span_missing_required_at_end.rs:5:10
+  |
+5 |     span.end();
+  |          ^^^ `demo.tenant.code` is required here
+  |
+  = help: the trait `fixture_semconv::spans::http::server::request::Required_demo_tenant_code` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, demo.tenant.code: <value>)` before `end()`
+help: the trait `fixture_semconv::spans::http::server::request::Required_demo_tenant_code` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::spans::http::server::request::Builder::<P0, P1, P2, P3, fixture_semconv::spans::http::server::request::Started>::end`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::end`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `url.path` on span `http.server.request`
+ --> tests/ui/fail_span_missing_required_at_end.rs:5:10
+  |
+5 |     span.end();
+  |          ^^^ `url.path` is required here
+  |
+  = help: the trait `Required_url_path` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, url.path: <value>)` before `end()`
+help: the trait `Required_url_path` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::spans::http::server::request::Builder::<P0, P1, P2, P3, fixture_semconv::spans::http::server::request::Started>::end`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::end`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,11 @@
+error: attributes `demo.cache-hit`, `demo.cache_hit` all map to the Rust type `demo__cache_hit`; rename one
+ --> tests/ui/fail_name_clash.rs:1:19
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/name-clash.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: attributes `demo.cache-hit`, `demo.cache_hit` all map to the Rust path `attr::demo::cache_hit`; rename one, or set `code_generation.rust.ident` on it
+ --> tests/ui/fail_name_clash.rs:1:19
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/name-clash.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

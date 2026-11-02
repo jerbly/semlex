@@ -1,0 +1,39 @@
+file_format: definition/2
+
+# The HTTP attributes come from OpenTelemetry semconv (the upstream).
+
+attributes:
+  - key: acme.tenant.code
+    type: string
+    stability: stable
+    brief: Short code of the tenant the request is for.
+    examples: ['ACME']
+
+metrics:
+  - name: http.server.request.duration
+    brief: Duration of HTTP requests.
+    unit: s
+    instrument: histogram
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      # Structured: handled by the custom macro's hook in slo-macros, which
+      # emits `slo::…` items for it. A handler only sees scalar arguments.
+      acme:
+        slo:
+          objective: 0.99   # 99% of requests
+          latency: 0.5      # within 500 ms
+    attributes:
+      - ref: http.request.method
+        requirement_level: required
+      - ref: http.route
+        requirement_level: required
+
+metric_refinements:
+  # Refinements inherit the annotation, so the hook sees them too.
+  - id: metric.http.server.request.duration.api
+    ref: http.server.request.duration
+    brief: Duration of HTTP API requests.
+    attributes:
+      - ref: acme.tenant.code
+        requirement_level: required

@@ -1,0 +1,40 @@
+file_format: definition/2
+
+attributes:
+  # Local: this service's own attribute.
+  - key: greeter.name
+    type: string
+    stability: stable
+    brief: Who is greeted.
+    examples: ['world']
+
+spans:
+  - type: greeter.greet
+    kind: internal
+    stability: stable
+    requirement_level: recommended
+    brief: Greeting someone.
+    name:
+      templates: ['greet {greeter.name}']
+    attributes:
+      - ref: greeter.name
+        requirement_level: required
+      # Upstream: from OpenTelemetry semconv.
+      - ref: error.type
+        requirement_level:
+          conditionally_required: If the greeting failed.
+
+metrics:
+  - name: greeter.greetings
+    brief: Number of greetings.
+    unit: '{greeting}'
+    instrument: counter
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: int
+    attributes:
+      - ref: error.type
+        requirement_level:
+          conditionally_required: If the greeting failed.

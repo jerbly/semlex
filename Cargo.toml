@@ -1,0 +1,32 @@
+[workspace]
+resolver = "3"
+members = ["crates/*", "examples/*", "examples/advanced/slo-macros", "tests/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/jerbly/semlex"
+keywords = ["opentelemetry", "semconv", "weaver", "telemetry", "observability"]
+categories = ["development-tools::debugging", "development-tools::procedural-macro-helpers"]
+
+[workspace.dependencies]
+# Versions too, so the crates can be published (path for development).
+semlex-schema = { path = "crates/semlex-schema", version = "0.1.0" }
+semlex-expand = { path = "crates/semlex-expand", version = "0.1.0" }
+semlex-macros = { path = "crates/semlex-macros", version = "0.1.0" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+
+# Proc macros (and their dependencies) compiled with optimizations:
+# `registry!()` parses the registry and builds the expansion at this speed on
+# every registry-crate rebuild. Recommended for users too.
+[profile.dev.build-override]
+opt-level = 3

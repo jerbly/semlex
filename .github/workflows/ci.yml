@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Keep in sync with `weaver_version` in the justfile.
+  WEAVER_VERSION: 0.28.0
+
+jobs:
+  rust:
+    name: fmt, clippy, test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      # Installs the toolchain pinned in rust-toolchain.toml (UI snapshots
+      # depend on the exact rustc version).
+      - run: rustup toolchain install
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+      - run: just lint
+      - run: just test
+      - run: just rebuild-check
+      - run: just unregistered-policy-check
+      - name: Escape-hatch report
+        run: just escape-report >> "$GITHUB_STEP_SUMMARY"
+
+  msrv:
+    name: MSRV (1.89)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.89
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+      # `+1.89` overrides rust-toolchain.toml.
+      - run: just msrv
+
+  fixtures:
+    name: fixtures packaged with pinned Weaver
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+      - name: Install Weaver ${{ env.WEAVER_VERSION }}
+        run: |
+          set -eu
+          asset="weaver-x86_64-unknown-linux-gnu.tar.xz"
+          base="https://github.com/open-telemetry/weaver/releases/download/v${WEAVER_VERSION}"
+          cd "$RUNNER_TEMP"
+          curl -fsSLO "$base/$asset"
+          curl -fsSLO "$base/$asset.sha256"
+          sha256sum -c "$asset.sha256"
+          tar -xJf "$asset"
+          install -m 0755 "$(find . -type f -name weaver | head -n1)" /usr/local/bin/weaver
+          weaver --version
+      - run: just policy-check
+      - run: just fixtures-check

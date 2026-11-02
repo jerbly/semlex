@@ -1,0 +1,30 @@
+error[E0080]: evaluation panicked: `extra(…)` is for attributes this signal doesn't define, and it defines this one: drop the `extra(…)`
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |         const { check_extra(B::MEMBERS, A::KEY) }
+  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `fixture_semconv::semlex::__private::extra_on::<&fixture_semconv::spans::http::server::request::Builder<fixture_semconv::semlex::Unset, fixture_semconv::semlex::Set, fixture_semconv::semlex::Unset, fixture_semconv::semlex::Set, fixture_semconv::spans::http::server::request::Started>, fixture_semconv::attr_types::http_route>::{constant#0}` failed inside this call
+  |
+note: inside `fixture_semconv::semlex::__private::check_extra`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  | /                 panic!(
+  | |                     "`extra(…)` is for attributes this signal doesn't define, and it defines this one: drop the `extra(…)`"
+  | |                 );
+  | |_________________- in this macro invocation
+
+note: erroneous constant encountered
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |         const { check_extra(B::MEMBERS, A::KEY) }
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+note: the above error was encountered while instantiating `fn fixture_semconv::semlex::__private::extra_on::<&fixture_semconv::spans::http::server::request::Builder<Unset, Set, Unset, Set, fixture_semconv::spans::http::server::request::Started>, http_route>`
+ --> tests/ui/fail_extra_member_record.rs:7:37
+  |
+7 |     fixture_semconv::record!(&span, extra(http.route): "/");
+  |                                     ^^^^^^^^^^

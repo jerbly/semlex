@@ -1,0 +1,28 @@
+error[E0277]: `{float}` is not a valid measurement here: this metric takes `U64` measurements
+ --> tests/ui/fail_metric_wrong_measurement.rs:4:40
+  |
+4 |     metric!(http.server.request.count: 1.5, { http.request.method: "GET" });
+  |             ----                       ^^^ expected a `U64` measurement
+  |             |
+  |             required by a bound introduced by this call
+  |
+  = help: the trait `IntoMeasurement<U64>` is not implemented for `{float}`
+  = note: `F64`: `f64`, `f32` | `Seconds` (unit `s`): `f64`, `f32` or `std::time::Duration` | `U64` (int counters, histograms): `u64`, `u32`, `u16`, `u8`, `usize`, or a non-negative literal | `I64` (int up-down counters, gauges): any integer up to 64 bits (`u64`/`usize` saturate at `i64::MAX`)
+  = help: the following other types implement trait `IntoMeasurement<K>`:
+            u16
+            u32
+            u64
+            u8
+            usize
+note: required by a bound in `fixture_semconv::metrics::http::server::request::count::Builder::<P0, C>::measure`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, C>::measure`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,21 @@
+error[E0277]: `url.scheme` is sampling-relevant on span `http.server.request` and can't be recorded after start
+ --> tests/ui/fail_span_sampling_relevant_after_start.rs:5:31
+  |
+5 |     let _span = record!(span, url.scheme: "http");
+  |                               ^^^ set this in `span!` instead
+  |
+  = help: the trait `fixture_semconv::spans::http::server::request::BeforeStart_url_scheme` is not implemented for `fixture_semconv::spans::http::server::request::Started`
+  = note: samplers only see attributes given when the span starts
+help: the trait `fixture_semconv::spans::http::server::request::With<url_scheme>` is conditionally implemented for `fixture_semconv::spans::http::server::request::Builder<P0, P1, P2, P3, C>`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ unsatisfied requirement introduced here: `fixture_semconv::spans::http::server::request::Started: fixture_semconv::spans::http::server::request::BeforeStart_url_scheme`
+  = note: required for `fixture_semconv::spans::http::server::request::Builder<Unset, Set, Unset, Set, fixture_semconv::spans::http::server::request::Started>` to implement `fixture_semconv::spans::http::server::request::With<url_scheme>`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

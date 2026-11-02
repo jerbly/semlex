@@ -1,0 +1,54 @@
+# One attribute per annotation effect, for the composed-hooks snapshot.
+file_format: resolved/2.0
+schema_url: https://example.com/schemas/1.0.0
+attribute_catalog:
+- key: tenant.code
+  type: string
+  brief: Tenant code (user handler).
+  stability: stable
+  annotations:
+    org:
+      case: upper
+- key: user.email
+  type: string
+  brief: User email (PII, with the user handler too).
+  stability: stable
+  annotations:
+    sensitivity: pii
+    org:
+      case: upper
+- key: request.timeout
+  type: double
+  brief: Timeout (Rust type override).
+  stability: stable
+  annotations:
+    code_generation:
+      rust:
+        type: std::time::Duration
+- key: url.path
+  type: string
+  brief: URL path (unbounded).
+  stability: stable
+  annotations:
+    cardinality: unbounded
+registry:
+  attributes: [0, 1, 2, 3]
+  attribute_groups: []
+  spans: []
+  metrics:
+  - name: requests
+    instrument: counter
+    unit: '{request}'
+    attributes:
+    - base: 0
+      requirement_level: required
+    - base: 3
+      requirement_level: recommended
+    brief: Requests.
+    stability: stable
+  events: []
+  entities: []
+refinements:
+  spans: []
+  metrics: []
+  events: []

@@ -1,0 +1,18 @@
+error[E0433]: cannot find `db` in `spans`
+ --> tests/ui/fail_groups_filter_excludes.rs:4:20
+  |
+4 |     let _ = spans::db::client::builder();
+  |                    ^^ could not find `db` in `spans`
+
+warning: unexpected `cfg` condition value: `semlex-unstable`
+ --> tests/ui/fail_groups_filter_excludes.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: ignore, demo.slo: ignore }, groups: ["http.*"] });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: expected values for `feature` are: `default`, `pii`, and `testing`
+  = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+  = help: try referring to `semlex::registry` crate for guidance on how handle this unexpected cfg
+  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+  = note: `#[warn(unexpected_cfgs)]` on by default
+  = note: this warning originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

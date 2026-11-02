@@ -1,0 +1,5 @@
+error: a span's kind comes from the registry; fix it there
+ --> tests/ui/fail_span_kind_option.rs:4:92
+  |
+4 |     let _ = span!(http.server.request { http.request.method: "GET", url.scheme: "https" }, kind: Server);
+  |                                                                                            ^^^^

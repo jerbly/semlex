@@ -1,0 +1,52 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+assertion_line: 47
+expression: "pretty(quote!(fn f() { let _ = #out; }))"
+---
+fn f() {
+    let _ = {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        [
+            {
+                const _: () = {
+                    __semlex_attr::http::request::method.check_usable();
+                    __semlex_attr::http::request::method.check_literal("GET");
+                };
+                __semlex_rt::kv(
+                    __semlex_attr::http::request::method,
+                    __semlex_attr::http::request::method.literal("GET"),
+                )
+            },
+            {
+                const _: () = {
+                    __semlex_attr::http::route.check_usable();
+                };
+                __semlex_rt::kv(__semlex_attr::http::route, route)
+            },
+            {
+                const _: () = {
+                    __semlex_attr::http::request::method.check_usable();
+                    __semlex_attr::http::request::method.check_custom("BREW");
+                };
+                __semlex_rt::kv(
+                    __semlex_attr::http::request::method,
+                    __semlex_rt::custom("BREW"),
+                )
+            },
+            {
+                const _: () = {
+                    __semlex_attr::http::request::header.check_usable();
+                };
+                __semlex_rt::kv_template(
+                    __semlex_attr::http::request::header.key("accept"),
+                    vec!["*/*"],
+                )
+            },
+        ]
+    };
+}

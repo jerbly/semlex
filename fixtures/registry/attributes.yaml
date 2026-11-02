@@ -1,0 +1,375 @@
+file_format: definition/2
+
+# Attribute definitions for the semlex fixture registry.
+# Names mirror OpenTelemetry semconv so tests read like real instrumentation,
+# but every attribute is defined here: packaging needs no dependency or network.
+
+attributes:
+  # --- Primitive and array types ---------------------------------------------
+  - key: http.route
+    type: string
+    stability: stable
+    brief: The matched route template.
+    examples: ['/users/{id}']
+
+  - key: http.response.status_code
+    type: int
+    stability: stable
+    brief: HTTP response status code.
+    examples: [200, 404]
+
+  - key: http.request.body.size
+    type: int
+    stability: development
+    brief: Size of the request body in bytes.
+    annotations:
+      cardinality: unbounded
+
+  - key: http.server.sample_rate
+    type: double
+    stability: alpha
+    brief: Fraction of requests sampled by the server.
+
+  - key: http.request.resend
+    type: boolean
+    stability: beta
+    brief: Whether this is a resend of an earlier request.
+
+  - key: url.scheme
+    type: string
+    stability: stable
+    brief: The URI scheme component.
+    examples: ['https']
+
+  - key: url.path
+    type: string
+    stability: stable
+    brief: The URI path component.
+    examples: ['/users/42']
+    annotations:
+      cardinality: unbounded
+
+  - key: url.template
+    type: string
+    stability: release_candidate
+    brief: The low-cardinality template of the URL.
+    examples: ['/users/{id}']
+
+  - key: process.command_args
+    type: string[]
+    stability: development
+    brief: All the command arguments.
+
+  - key: demo.retry.delays
+    type: int[]
+    stability: development
+    brief: Delays between retries, in milliseconds.
+
+  - key: demo.weights
+    type: double[]
+    stability: stable
+    brief: Load-balancer weights.
+
+  - key: demo.flags
+    type: boolean[]
+    stability: development
+    brief: Feature flags evaluated for the request.
+
+  - key: demo.payload
+    type: any
+    stability: development
+    brief: A structured payload. Only valid on log records.
+
+  # Path segment that is a Rust keyword (name-mangling test).
+  - key: demo.type
+    type: string
+    stability: development
+    brief: The kind of demo object.
+
+  # Rust identifier override.
+  - key: demo.match
+    type: string
+    stability: development
+    brief: The matched rule.
+    annotations:
+      code_generation:
+        rust:
+          ident: matched
+
+  # Rust value type override: takes a `Duration`, recorded as seconds.
+  - key: demo.timeout
+    type: double
+    stability: stable
+    brief: Configured request timeout, in seconds.
+    annotations:
+      code_generation:
+        rust:
+          type: std::time::Duration
+
+  # --- Template types ---------------------------------------------------------
+  - key: http.request.header
+    type: template[string[]]
+    stability: stable
+    brief: HTTP request headers, `<key>` being the normalized header name.
+    examples: [['application/json']]
+
+  - key: demo.label
+    type: template[string]
+    stability: development
+    brief: Free-form labels, `<key>` being the label name.
+
+  # --- Enums -------------------------------------------------------------------
+  - key: http.request.method
+    stability: stable
+    brief: HTTP request method.
+    type:
+      members:
+        - id: connect
+          value: CONNECT
+          brief: CONNECT method.
+          stability: stable
+        - id: delete
+          value: DELETE
+          brief: DELETE method.
+          stability: stable
+        - id: get
+          value: GET
+          brief: GET method.
+          stability: stable
+        - id: post
+          value: POST
+          brief: POST method.
+          stability: stable
+        - id: put
+          value: PUT
+          brief: PUT method.
+          stability: stable
+        - id: query
+          value: QUERY
+          brief: QUERY method (draft).
+          stability: development
+        - id: other
+          value: _OTHER
+          brief: Any HTTP method not listed.
+          stability: stable
+
+  - key: rpc.grpc.status_code
+    stability: development
+    brief: Numeric gRPC status code.
+    type:
+      members:
+        - id: ok
+          value: 0
+          brief: OK
+          stability: development
+        - id: cancelled
+          value: 1
+          brief: CANCELLED
+          stability: development
+        - id: unknown
+          value: 2
+          brief: UNKNOWN
+          stability: development
+
+  - key: demo.cache.hit
+    stability: development
+    brief: Cache outcome.
+    type:
+      members:
+        - id: hit
+          value: true
+          brief: The cache had the entry.
+          stability: development
+        - id: miss
+          value: false
+          brief: The cache did not have the entry.
+          stability: development
+
+  - key: demo.tier
+    stability: beta
+    brief: Service tier.
+    annotations:
+      code_generation:
+        rust:
+          enum_name: ServiceTier
+    type:
+      members:
+        - id: free
+          value: free
+          brief: Free tier.
+          stability: stable
+        - id: pro
+          value: pro
+          brief: Paid tier.
+          stability: beta
+        - id: legacy
+          value: legacy
+          brief: Legacy paid tier.
+          stability: stable
+          deprecated:
+            reason: renamed
+            renamed_to: pro
+            note: Use `pro`.
+        - id: internal
+          value: internal
+          brief: Internal accounts.
+          stability: development
+          annotations:
+            code_generation:
+              exclude: true
+
+  # --- Session, user, exception ----------------------------------------------
+  - key: session.id
+    type: string
+    stability: development
+    brief: A unique id to identify a session.
+
+  - key: session.previous_id
+    type: string
+    stability: development
+    brief: The previous session id.
+
+  - key: user.id
+    type: string
+    stability: development
+    brief: Unique identifier of the user.
+    annotations:
+      sensitivity: pii
+      cardinality: unbounded
+
+  - key: user.email
+    type: string
+    stability: stable
+    brief: User email address.
+    annotations:
+      sensitivity: pii
+
+  - key: demo.tenant.code
+    type: string
+    stability: stable
+    brief: Short code identifying the tenant.
+    annotations:
+      demo:
+        case: upper
+
+  - key: exception.type
+    type: string
+    stability: stable
+    brief: The type of the exception.
+
+  - key: exception.message
+    type: string
+    stability: stable
+    brief: The exception message.
+
+  - key: exception.stacktrace
+    type: string
+    stability: stable
+    brief: A stacktrace as a string.
+
+  # --- Database (refinement tests) -------------------------------------------
+  - key: db.system.name
+    type: string
+    stability: release_candidate
+    brief: The database management system.
+    examples: ['postgresql', 'hbase']
+
+  - key: db.namespace
+    type: string
+    stability: release_candidate
+    brief: The name of the database.
+
+  - key: db.operation.name
+    type: string
+    stability: release_candidate
+    brief: The name of the operation being executed.
+
+  - key: db.hbase.region
+    type: string
+    stability: development
+    brief: HBase region name.
+
+  # --- Resource / entity attributes ------------------------------------------
+  - key: service.name
+    type: string
+    stability: stable
+    brief: Logical name of the service.
+
+  - key: service.namespace
+    type: string
+    stability: development
+    brief: A namespace for `service.name`.
+
+  - key: service.instance.id
+    type: string
+    stability: development
+    brief: The string ID of the service instance.
+
+  - key: service.version
+    type: string
+    stability: stable
+    brief: The version string of the service.
+
+  - key: host.name
+    type: string
+    stability: development
+    brief: Name of the host.
+
+  - key: host.arch
+    type: string
+    stability: development
+    brief: The CPU architecture of the host.
+
+  - key: host.os.build
+    type: string
+    stability: development
+    brief: OS build number (Windows hosts).
+
+  - key: container.id
+    type: string
+    stability: development
+    brief: Container ID.
+
+  # --- Deprecation reasons ---------------------------------------------------
+  - key: db.operation
+    type: string
+    stability: development
+    brief: Deprecated, use `db.operation.name` instead.
+    deprecated:
+      reason: renamed
+      renamed_to: db.operation.name
+      note: Renamed.
+
+  - key: db.jdbc.driver_classname
+    type: string
+    stability: development
+    brief: Removed, no replacement at this time.
+    deprecated:
+      reason: obsoleted
+      note: Removed, no replacement at this time.
+
+  # A stable attribute that has been renamed (as in OTel semconv).
+  - key: http.method
+    type: string
+    stability: stable
+    brief: Deprecated, use `http.request.method` instead.
+    deprecated:
+      reason: renamed
+      renamed_to: http.request.method
+
+  - key: db.connection_string
+    type: string
+    stability: development
+    brief: Deprecated, use `server.address` and `server.port`.
+    deprecated:
+      reason: uncategorized
+      note: Replaced by `server.address` and `server.port`.
+
+  # Excluded from code generation.
+  - key: demo.internal_debug
+    type: string
+    stability: development
+    brief: Internal debug data; never emitted from code.
+    annotations:
+      code_generation:
+        exclude: true

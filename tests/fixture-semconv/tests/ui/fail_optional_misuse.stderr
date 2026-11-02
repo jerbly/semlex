@@ -1,0 +1,11 @@
+error: `key?: option` is for signal macros (`span!`, `record!(span, …)`, `metric!`, `event!`, `entity!`); here, unwrap the option first
+ --> tests/ui/fail_optional_misuse.rs:5:30
+  |
+5 |     let _ = attrs![http.route?: route];
+  |                              ^
+
+error: a literal is never `None`: drop the `?`
+ --> tests/ui/fail_optional_misuse.rs:7:38
+  |
+7 |     let span = record!(span, url.path?: "/");
+  |                                      ^

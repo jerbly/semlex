@@ -1,0 +1,31 @@
+error[E0277]: `i64` is not a valid value here: this attribute takes a `StringValue`
+ --> tests/ui/fail_wrong_value_type.rs:5:32
+  |
+5 |     let _ = attrs![http.route: n];
+  |                    ----        ^ expected a `StringValue`
+  |                    |
+  |                    required by a bound introduced by this call
+  |
+  = note: `StringValue`: `&str`, `&String`, `String`, `Cow<'static, str>`, `Arc<str>` | `IntValue`: any integer up to 64 bits (`u64`/`usize` saturate at `i64::MAX`) | `DoubleValue`: `f64`, `f32` | `BoolValue`: `bool` | arrays: `Vec<…>` of those | enums: the enum, a string literal, or `custom(…)` | `Pii<…>` (`sensitivity: pii`): wrap the value in `redacted(…)` or `hashed(…)` | `Typed<K, T>` (`code_generation.rust.type`): pass a `T`
+help: the trait `IntoValue<StringValue>` is not implemented for `i64`
+      but trait `IntoValue<IntValue>` is implemented for it
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |           $(impl IntoValue<kind::$kind> for $t {
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+  | / into_value!(IntValue:
+  | |     i64 => |v| Value::I64(v),
+  | |     i32 => |v| Value::I64(v.into()),
+  | |     i16 => |v| Value::I64(v.into()),
+... |
+  | |     isize => |v| Value::I64(v as i64),
+  | | );
+  | |_- in this macro invocation
+  = help: for that trait implementation, expected `IntValue`, found `StringValue`
+note: required by a bound in `fixture_semconv::semlex::__private::kv`
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |     pub fn kv<A: Attribute, V: IntoValue<A::Kind>>(attribute: A, value: V) -> KeyValue {
+  |                                ^^^^^^^^^^^^^^^^^^ required by this bound in `kv`
+  = note: this error originates in the macro `into_value` (in Nightly builds, run with -Z macro-backtrace for more info)

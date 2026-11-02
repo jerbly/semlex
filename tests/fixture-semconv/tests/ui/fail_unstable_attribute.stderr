@@ -1,0 +1,22 @@
+error[E0080]: evaluation panicked: attribute `session.id` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items
+ --> tests/ui/fail_unstable_attribute.rs:4:20
+  |
+4 |     let _ = attrs![session.id: "s-1"];
+  |                    ^^^^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `session_id::check_usable`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__- in this macro invocation

@@ -1,0 +1,18 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: "&text[start..end]"
+---
+/// Items from annotation hooks under `owners`.
+pub mod owners {
+    pub const OWNERS: &[(&str, &str)] = &[("http.route", "web")];
+}
+/// Items from annotation hooks under `slo`.
+pub mod slo {
+    /// Items from annotation hooks under `slo.http`.
+    pub mod http {
+        pub const OBJECTIVE: f64 = 0.99f64;
+        pub const METRIC: &str = "http.server.duration";
+        pub use crate::metrics::http::server::duration as metric;
+        pub use crate::attr::http::route as ROUTE;
+    }
+}

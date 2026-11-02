@@ -1,0 +1,5 @@
+use fixture_semconv::attrs;
+
+fn main() {
+    let _ = attrs![http.request.method: "GET", http.rout: "/"];
+}

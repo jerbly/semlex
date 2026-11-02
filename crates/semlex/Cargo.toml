@@ -1,0 +1,36 @@
+[package]
+name = "semlex"
+description = "Compile-time OpenTelemetry semantic conventions for Rust, straight from your Weaver registry."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+# Publishable (examples aren't); not published yet.
+publish = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../../README.md"
+license.workspace = true
+
+[dependencies]
+semlex-macros.workspace = true
+opentelemetry = { version = "0.33", default-features = false, features = ["metrics", "logs", "trace"] }
+hmac = { version = "0.13", optional = true }
+tracing = "0.1.44"
+opentelemetry_sdk = { version = "0.33", optional = true, default-features = false, features = ["testing", "metrics", "logs", "trace"] }
+sha2 = { version = "0.11", optional = true }
+
+
+[features]
+default = ["pii"]
+# `hashed(…)` for `sensitivity: pii` attributes (HMAC-SHA256). `redacted(…)`
+# needs nothing; turn this off in a crate with no hashed PII.
+pii = ["dep:hmac", "dep:sha2"]
+# Telemetry assertion helpers (`semlex::testing`), with the OTel SDK's in-memory exporters.
+testing = ["dep:opentelemetry_sdk"]
+
+[dev-dependencies]
+trybuild = "1.0"
+
+[lints]
+workspace = true

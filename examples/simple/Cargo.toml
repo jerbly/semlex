@@ -1,0 +1,19 @@
+[package]
+name = "simple"
+description = "The smallest semlex service: a local registry with OpenTelemetry semconv upstream, expanded in the crate."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+semlex = { path = "../../crates/semlex" }
+opentelemetry_sdk = { version = "0.33", features = ["metrics", "trace"] }
+opentelemetry-stdout = "0.33"
+
+[dev-dependencies]
+semlex = { path = "../../crates/semlex", features = ["testing"] }
+
+[lints]
+workspace = true

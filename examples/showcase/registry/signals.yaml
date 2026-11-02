@@ -1,0 +1,203 @@
+file_format: definition/2
+
+# The shop's signals: what each operation must record. Attributes outside
+# `shop.*` come from OpenTelemetry semconv (the upstream in manifest.yaml);
+# these signals are the shop's own definitions, so they set their own
+# requirements. Upstream signals aren't imported.
+
+attribute_groups:
+  - id: attributes.http.server
+    visibility: internal
+    attributes:
+      - ref: http.request.method
+        requirement_level: required
+      - ref: http.route
+        requirement_level:
+          conditionally_required: If the request matched a route.
+      - ref: http.response.status_code
+        requirement_level:
+          conditionally_required: If a response was sent.
+      - ref: error.type
+        requirement_level:
+          conditionally_required: If the request ended with an error.
+
+  # Public: logs can check against it with `group exception { … }`.
+  - id: exception
+    visibility: public
+    brief: Attributes describing an exception.
+    stability: stable
+    attributes:
+      - ref: exception.type
+        requirement_level: required
+      - ref: exception.message
+        requirement_level: required
+
+spans:
+  - type: http.server.request
+    kind: server
+    stability: stable
+    requirement_level: recommended
+    brief: An HTTP request handled by the shop.
+    name:
+      # The first template whose attributes are all set wins, at `end()`.
+      templates:
+        - '{http.request.method} {http.route}'
+        - '{http.request.method}'
+    attributes:
+      - ref_group: attributes.http.server
+      # Samplers see only start attributes, so these must be in `span!`.
+      - ref: http.request.method
+        requirement_level: required
+        sampling_relevant: true
+      - ref: url.scheme
+        requirement_level: required
+        sampling_relevant: true
+      # Required, but may be set any time before `end()`. Ids in paths:
+      # never a metric attribute (an annotation on the reference, since the
+      # upstream definition has none).
+      - ref: url.path
+        requirement_level: required
+        annotations:
+          cardinality: unbounded
+      - ref: shop.tenant.code
+        requirement_level: required
+      - ref: shop.customer.id
+        requirement_level:
+          recommended: When the customer is signed in.
+      - ref: http.request.header
+        requirement_level: opt_in
+    entity_associations:
+      - service
+
+  - type: shop.payment.authorize
+    kind: client
+    stability: stable
+    requirement_level: recommended
+    brief: Authorizing a payment with the payment provider.
+    name:
+      templates:
+        - 'authorize {shop.payment.method}'
+    attributes:
+      - ref: shop.payment.method
+        requirement_level: required
+        sampling_relevant: true
+      - ref: shop.payment.timeout
+        requirement_level: required
+      - ref: shop.customer.email
+        requirement_level:
+          recommended: For fraud checks.
+      - ref: error.type
+        requirement_level:
+          conditionally_required: If authorization failed.
+
+  # The name is given in prose, so `span!` must pass `name: …`.
+  - type: db.client
+    kind: client
+    stability: stable
+    requirement_level: recommended
+    brief: A database call.
+    name:
+      note: '{db.operation.name} {db.namespace}, or a query summary.'
+    attributes:
+      - ref: db.system.name
+        requirement_level: required
+        sampling_relevant: true
+      - ref: db.namespace
+        requirement_level: required
+      - ref: db.operation.name
+        requirement_level:
+          conditionally_required: If readily available.
+
+span_refinements:
+  # A database call for an order: everything `db.client` has, plus the order.
+  - id: span.shop.orders.insert
+    ref: db.client
+    brief: Inserting an order.
+    attributes:
+      - ref: shop.order.id
+        requirement_level: required
+
+metrics:
+  - name: http.server.request.duration
+    brief: Duration of HTTP requests handled by the shop.
+    unit: s
+    instrument: histogram
+    stability: stable
+    requirement_level: recommended
+    attributes:
+      - ref_group: attributes.http.server
+      - ref: http.route
+        requirement_level: required
+      - ref: url.scheme
+        requirement_level: recommended
+    entity_associations:
+      - service
+
+  - name: shop.cart.items_sold
+    brief: Number of items sold.
+    unit: '{item}'
+    instrument: counter
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: int
+    attributes:
+      - ref: shop.payment.method
+        requirement_level: required
+      - ref: shop.tenant.code
+        requirement_level: required
+
+  - name: shop.checkout.active
+    brief: Number of checkouts in progress.
+    unit: '{checkout}'
+    instrument: updowncounter
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: int
+    attributes:
+      - ref: shop.tenant.code
+        requirement_level: required
+
+  # Off unless enabled by name in `semlex::init`.
+  - name: shop.inventory.fill_ratio
+    brief: Fraction of warehouse capacity in use.
+    unit: '1'
+    instrument: gauge
+    stability: stable
+    requirement_level: opt_in
+    attributes:
+      - ref: shop.inventory.fill_ratio_tier
+        requirement_level: required
+
+events:
+  - name: shop.order.placed
+    brief: A customer placed an order.
+    stability: stable
+    requirement_level: recommended
+    attributes:
+      - ref: shop.order.id
+        requirement_level: required
+      - ref: shop.cart.item_count
+        requirement_level: required
+      - ref: shop.cart.skus
+        requirement_level: recommended
+      - ref: shop.payment.method
+        requirement_level: recommended
+    entity_associations:
+      - service
+
+entities:
+  - type: service
+    brief: A service instance.
+    stability: stable
+    requirement_level: recommended
+    identity:
+      - ref: service.name
+      - ref: service.instance.id
+    description:
+      - ref: service.version
+        requirement_level: required
+

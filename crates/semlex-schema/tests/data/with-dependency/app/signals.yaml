@@ -1,0 +1,23 @@
+file_format: definition/2
+attributes:
+  - key: app.job.id
+    type: string
+    stability: stable
+    brief: The job.
+spans:
+  - type: app.job.run
+    kind: internal
+    stability: stable
+    requirement_level: recommended
+    brief: Running a job.
+    name:
+      templates: ['run job']
+    attributes:
+      - ref: app.job.id
+        requirement_level: required
+      - ref: error.type
+        requirement_level:
+          conditionally_required: If the job failed.
+      # Overrides a dependency attribute's brief on this span.
+      - ref: server.address
+        brief: The job server.

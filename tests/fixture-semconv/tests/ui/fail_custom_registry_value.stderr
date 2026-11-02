@@ -1,0 +1,22 @@
+error[E0080]: evaluation panicked: this value is in the registry for `http.request.method`: write it as a plain literal instead of `custom(…)`
+ --> tests/ui/fail_custom_registry_value.rs:4:20
+  |
+4 |     let _ = attrs![http.request.method: custom("GET")];
+  |                    ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `http_request_method::check_custom`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__- in this macro invocation

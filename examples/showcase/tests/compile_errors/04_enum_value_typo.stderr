@@ -1,0 +1,21 @@
+error[E0080]: evaluation panicked: unknown value for `http.request.method`; did you mean "POST"? Use `custom("…")` for values outside the registry
+ --> tests/compile_errors/04_enum_value_typo.rs:5:44
+  |
+5 |     let span = span!(http.server.request { http.request.method: "PSOT", url.scheme: "https" });
+  |                                            ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `http_request_method::check_literal`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_display(&$arg);
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__- in this macro invocation

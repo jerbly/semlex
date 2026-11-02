@@ -1,0 +1,23 @@
+# Two keys that map to the same Rust path, `attr::demo::cache_hit`.
+file_format: resolved/2.0
+schema_url: https://example.com/1.0
+attribute_catalog:
+- key: demo.cache-hit
+  type: boolean
+  brief: Cache hit (kebab).
+  stability: development
+- key: demo.cache_hit
+  type: boolean
+  brief: Cache hit (snake).
+  stability: development
+registry:
+  attributes: [0, 1]
+  attribute_groups: []
+  spans: []
+  metrics: []
+  events: []
+  entities: []
+refinements:
+  spans: []
+  metrics: []
+  events: []

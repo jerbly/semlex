@@ -1,0 +1,5 @@
+error: expected the path of a resolved registry, e.g. `registry!("resolved.yaml")`
+ --> tests/ui/fail_not_a_string.rs:1:19
+  |
+1 | semlex::registry!(resolved.yaml);
+  |                   ^^^^^^^^

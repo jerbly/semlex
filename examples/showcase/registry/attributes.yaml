@@ -1,0 +1,91 @@
+file_format: definition/2
+
+# The shop's own attributes. The HTTP, URL, database, exception and service
+# attributes its signals use come from OpenTelemetry semconv, the
+# registry's upstream (see manifest.yaml).
+
+attributes:
+  # --- The shop ----------------------------------------------------------------
+  - key: shop.tenant.code
+    type: string
+    stability: stable
+    brief: Short code of the tenant (store) the request is for.
+    examples: ['ACME']
+    annotations:
+      # Our own annotation, enforced by the `shop.case` handler.
+      shop:
+        case: upper
+
+  - key: shop.customer.id
+    type: string
+    stability: stable
+    brief: The customer's account id.
+    annotations:
+      sensitivity: pii
+      cardinality: unbounded
+
+  - key: shop.customer.email
+    type: string
+    stability: stable
+    brief: The customer's email address.
+    annotations:
+      sensitivity: pii
+
+  - key: shop.cart.item_count
+    type: int
+    stability: stable
+    brief: Number of items in the cart.
+    examples: [3]
+
+  - key: shop.cart.size
+    type: int
+    stability: stable
+    brief: Number of items in the cart.
+    deprecated:
+      reason: renamed
+      renamed_to: shop.cart.item_count
+
+  - key: shop.cart.skus
+    type: string[]
+    stability: stable
+    brief: Stock-keeping units of the items in the cart.
+    examples: [['SKU-1', 'SKU-2']]
+
+  - key: shop.order.id
+    type: string
+    stability: stable
+    brief: Identifier of the placed order.
+    annotations:
+      cardinality: unbounded
+
+  - key: shop.payment.method
+    stability: stable
+    brief: How the customer pays.
+    annotations:
+      code_generation:
+        rust:
+          enum_name: PaymentMethod
+    type:
+      members:
+        - { id: card, value: card, brief: Credit or debit card., stability: stable }
+        - { id: wallet, value: wallet, brief: A digital wallet., stability: stable }
+        - { id: invoice, value: invoice, brief: Pay later by invoice., stability: stable }
+        # Not stable yet: using it needs the registry crate's `semlex-unstable` feature.
+        - { id: crypto, value: crypto, brief: Cryptocurrency (pilot)., stability: development }
+
+  - key: shop.payment.timeout
+    type: double
+    stability: stable
+    brief: Timeout for the payment provider, in seconds.
+    annotations:
+      code_generation:
+        rust:
+          # Call sites pass a `Duration`; it's recorded in seconds.
+          type: std::time::Duration
+
+  - key: shop.inventory.fill_ratio_tier
+    type: string
+    stability: stable
+    brief: Warehouse tier the fill ratio is for.
+    examples: ['fast', 'bulk']
+

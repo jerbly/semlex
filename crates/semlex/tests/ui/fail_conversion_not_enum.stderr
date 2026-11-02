@@ -1,0 +1,5 @@
+error: `conversions`: `http.route` isn't an enum attribute; for other attributes use `code_generation.rust.type`
+ --> tests/ui/fail_conversion_not_enum.rs:3:20
+  |
+3 |     conversions: { http.route: ::std::string::String },
+  |                    ^^^^

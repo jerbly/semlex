@@ -1,0 +1,12 @@
+error: use of deprecated function `main::__semlex_unregistered`: `shop.coupon.code` is not in the semantic-convention registry; add it to the registry
+ --> tests/compile_errors/13_unregistered_needs_review.rs:9:43
+  |
+9 |     let span = record!(span, unregistered("shop.coupon.code"): "SPRING");
+  |                                           ^^^^^^^^^^^^^^^^^^
+  |
+note: the lint level is defined here
+ --> tests/compile_errors/13_unregistered_needs_review.rs:3:9
+  |
+3 | #![deny(warnings)]
+  |         ^^^^^^^^
+  = note: `#[deny(deprecated)]` implied by `#[deny(warnings)]`

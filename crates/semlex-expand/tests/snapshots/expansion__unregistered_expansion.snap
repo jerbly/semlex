@@ -1,0 +1,31 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+assertion_line: 120
+expression: "pretty(quote!(fn f() { let _ = #out; }))"
+---
+fn f() {
+    let _ = {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        [
+            {
+                const _: () = __semlex_rt::check_unregistered(
+                    "retry.attempt",
+                    __semlex_reg::ATTRIBUTE_KEYS,
+                    __semlex_reg::TEMPLATE_PREFIXES,
+                );
+                #[deprecated(
+                    note = "`retry.attempt` is not in the semantic-convention registry; add it to the registry"
+                )]
+                fn __semlex_unregistered() {}
+                __semlex_unregistered();
+                __semlex_rt::unregistered_attribute();
+                __semlex_rt::unregistered_kv("retry.attempt", n)
+            },
+        ]
+    };
+}

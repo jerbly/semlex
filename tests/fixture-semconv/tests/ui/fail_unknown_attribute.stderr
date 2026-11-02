@@ -1,0 +1,15 @@
+error[E0425]: cannot find value `rout` in module `__semlex_attr::http`
+ --> tests/ui/fail_unknown_attribute.rs:4:53
+  |
+4 |     let _ = attrs![http.request.method: "GET", http.rout: "/"];
+  |                                                     ^^^^
+  |
+ ::: src/lib.rs
+  |
+  | semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | ---------------------------------------------------------- similarly named constant `route` defined here
+  |
+help: a constant with a similar name exists
+  |
+4 |     let _ = attrs![http.request.method: "GET", http.route: "/"];
+  |                                                         +

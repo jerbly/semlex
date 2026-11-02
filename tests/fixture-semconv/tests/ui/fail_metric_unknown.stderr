@@ -1,0 +1,5 @@
+error[E0433]: cannot find `durations` in `request`
+ --> tests/ui/fail_metric_unknown.rs:4:33
+  |
+4 |     metric!(http.server.request.durations: 0.5);
+  |                                 ^^^^^^^^^ could not find `durations` in `request`

@@ -1,0 +1,98 @@
+# A minimal resolved registry with one item of each kind, for expansion
+# snapshots. Hand-written in Weaver's resolved/2.0 shape (checked by parsing).
+file_format: resolved/2.0
+schema_url: https://example.com/schemas/1.0.0
+attribute_catalog:
+- key: http.route
+  type: string
+  brief: The matched route template.
+  stability: stable
+- key: http.response.status_code
+  type: int
+  brief: HTTP response status code.
+  stability: stable
+- key: http.request.method
+  type:
+    members:
+    - id: get
+      value: GET
+      stability: stable
+    - id: query
+      value: QUERY
+      stability: development
+  brief: HTTP request method.
+  stability: stable
+- key: rpc.grpc.status_code
+  type:
+    members:
+    - id: ok
+      value: 0
+      stability: development
+    - id: cancelled
+      value: 1
+      stability: development
+  brief: gRPC status code.
+  stability: development
+- key: cache.hit
+  type:
+    members:
+    - id: hit
+      value: true
+      stability: stable
+    - id: miss
+      value: false
+      stability: stable
+  brief: Cache outcome.
+  stability: stable
+- key: http.request.header
+  type: template[string[]]
+  brief: HTTP request headers.
+  stability: stable
+- key: http.method
+  type: string
+  brief: Deprecated.
+  stability: stable
+  deprecated:
+    reason: renamed
+    renamed_to: http.request.method
+registry:
+  attributes: [0, 1, 2, 3, 4, 5, 6]
+  attribute_groups: []
+  spans:
+  - type: http.server
+    kind: server
+    name:
+      templates:
+      - pattern: '{http.request.method}'
+        attributes: [http.request.method]
+        parts:
+        - type: attribute
+          attribute: http.request.method
+    attributes:
+    - base: 2
+      requirement_level: required
+      sampling_relevant: true
+    - base: 1
+      requirement_level: required
+    - base: 0
+      requirement_level: recommended
+    brief: An HTTP server span.
+    stability: stable
+  metrics:
+  - name: http.server.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 2
+      requirement_level: required
+    - base: 0
+      requirement_level:
+        conditionally_required: If available.
+    brief: Request duration.
+    stability: stable
+  events: []
+  entities: []
+refinements:
+  spans: []
+  metrics: []
+  events: []

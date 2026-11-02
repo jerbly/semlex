@@ -1,0 +1,7 @@
+# Pinned so trybuild `.stderr` snapshots are reproducible: rustc's
+# notes change between versions. The MSRV (1.89) is checked separately in CI.
+# `rust-src` too: with it, rustc quotes `core` source in const-eval panic
+# notes; without it, a bare `= note:`. Every machine must agree.
+[toolchain]
+channel = "1.99.0"
+components = ["rustfmt", "clippy", "rust-src"]

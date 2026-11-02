@@ -1,0 +1,56 @@
+file_format: definition/2
+# Every finding in policies/registry/annotations.rego, once each.
+attributes:
+  - key: bad.cardinality
+    type: string
+    stability: stable
+    brief: Bad cardinality.
+    annotations:
+      cardinality: huge
+  - key: bad.sensitivity
+    type: string
+    stability: stable
+    brief: Bad sensitivity.
+    annotations:
+      sensitivity: secret
+  - key: bad.exclude
+    type: string
+    stability: stable
+    brief: Bad exclude.
+    annotations:
+      code_generation:
+        exclude: "yes"
+  - key: bad.ident
+    type: string
+    stability: stable
+    brief: Bad ident.
+    annotations:
+      code_generation:
+        rust:
+          ident: not-an-ident
+  - key: bad.rust_type
+    type: string
+    stability: stable
+    brief: Bad Rust type.
+    annotations:
+      code_generation:
+        rust:
+          type: 42
+  - key: unbounded.path
+    type: string
+    stability: stable
+    brief: Unbounded.
+    annotations:
+      cardinality: unbounded
+metrics:
+  - name: bad.metric
+    brief: A metric with a bad value type and an unbounded attribute.
+    unit: '1'
+    instrument: counter
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: float
+    attributes:
+      - ref: unbounded.path

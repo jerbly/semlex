@@ -1,0 +1,32 @@
+error[E0277]: `error_type` is not an attribute of span `db.client`
+ --> tests/compile_errors/14_error_type_not_on_span.rs:9:27
+  |
+9 |     end!(span, error: &e, error.type: "io");
+  |                           -----^^^^^
+  |                           |
+  |                           not an attribute of this span
+  |                           required by a bound introduced by this call
+  |
+  = help: the trait `showcase::spans::db::client::With<error_type>` is not implemented for `showcase::spans::db::client::Builder<Set, Set, showcase::spans::db::client::Started>`
+  = note: span `db.client` defines: `db.namespace`, `db.operation.name`, `db.system.name`. Use one of those, or add this attribute to the span in the registry (attribute types are named after their keys with `.` as `_`)
+help: the trait `showcase::spans::db::client::With<db_system_name>` is implemented for `showcase::spans::db::client::Builder<P0, P1, C>`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::db::client::Builder::<P0, P1, showcase::spans::db::client::Started>::with`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, Started>::with`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

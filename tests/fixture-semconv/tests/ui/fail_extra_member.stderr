@@ -1,0 +1,18 @@
+error[E0080]: evaluation panicked: `extra(…)` is for attributes this signal doesn't define, and it defines this one: drop the `extra(…)`
+ --> tests/ui/fail_extra_member.rs:8:15
+  |
+8 |         extra(http.request.method): "GET",
+  |               ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `fixture_semconv::semlex::__private::check_extra`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  | /                 panic!(
+  | |                     "`extra(…)` is for attributes this signal doesn't define, and it defines this one: drop the `extra(…)`"
+  | |                 );
+  | |_________________- in this macro invocation

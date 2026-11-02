@@ -1,0 +1,27 @@
+error[E0080]: evaluation panicked: value must be upper case (annotation `demo.case: upper`)
+ --> tests/ui/fail_handler_literal.rs:4:20
+  |
+4 |     let _ = attrs![demo.tenant.code: "acme-eu"];
+  |                    ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `demo_tenant_code::check_literal`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: inside `fixture_semconv::annotations::case::check_literal`
+ --> $RUST/core/src/panic.rs
+  |
+  |         $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  |                         panic!("value must be upper case (annotation `demo.case: upper`)");
+  |                         ------------------------------------------------------------------ in this macro invocation

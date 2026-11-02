@@ -1,0 +1,50 @@
+error[E0277]: missing sampling-relevant attribute `url.scheme` on span `http.server.request`
+ --> tests/compile_errors/06_sampling_relevant_too_late.rs:6:22
+  |
+6 |     let span = span!(http.server.request { http.request.method: "GET" });
+  |                      ^^^^ `url.scheme` must be set when the span starts
+  |
+  = help: the trait `AtStart_url_scheme` is not implemented for `Unset`
+  = note: add `url.scheme: <value>` to `span!`; samplers only see attributes given at start
+help: the trait `AtStart_url_scheme` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::http::server::request::Builder::<P0, P1, P2, P3>::start`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3>::start`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `url.scheme` is sampling-relevant on span `http.server.request` and can't be recorded after start
+ --> tests/compile_errors/06_sampling_relevant_too_late.rs:7:30
+  |
+7 |     let span = record!(span, url.scheme: "https", url.path: "/", shop.tenant.code: "ACME");
+  |                              ^^^ set this in `span!` instead
+  |
+  = help: the trait `showcase::spans::http::server::request::BeforeStart_url_scheme` is not implemented for `showcase::spans::http::server::request::Started`
+  = note: samplers only see attributes given when the span starts
+help: the trait `showcase::spans::http::server::request::With<url_scheme>` is conditionally implemented for `showcase::spans::http::server::request::Builder<P0, P1, P2, P3, C>`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ unsatisfied requirement introduced here: `showcase::spans::http::server::request::Started: showcase::spans::http::server::request::BeforeStart_url_scheme`
+  = note: required for `showcase::spans::http::server::request::Builder<Set, Unset, Unset, Unset, showcase::spans::http::server::request::Started>` to implement `showcase::spans::http::server::request::With<url_scheme>`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

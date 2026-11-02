@@ -1,0 +1,5 @@
+error: template attributes can't be logged through `tracing` (field names are fixed at compile time); emit an event with `event!` instead
+ --> tests/ui/fail_log_template.rs:4:11
+  |
+4 |     warn!(http.request.header("accept"): vec!["*/*"], "odd header");
+  |           ^^^^

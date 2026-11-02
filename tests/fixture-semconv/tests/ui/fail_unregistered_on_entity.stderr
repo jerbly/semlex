@@ -1,0 +1,5 @@
+error: `unregistered(…)` attributes can't be used on entities: an entity's attributes identify it, so they must be the ones the registry defines for it
+ --> tests/ui/fail_unregistered_on_entity.rs:4:48
+  |
+4 |     let _ = entity!(host { host.name: "web-1", unregistered("host.rack"): "r1" });
+  |                                                ^^^^^^^^^^^^

@@ -1,0 +1,23 @@
+error[E0277]: `url.path` is unbounded (annotation `cardinality: unbounded`) and can't be an attribute of metric `http.server.duration`
+ --> tests/ui/fail_unbounded_metric_attribute.rs:4:56
+  |
+4 |     let _ = metrics::http::server::duration::builder().with(attr::url::path, "/users/42");
+  |                                                        ^^^^ unbounded values make metric cardinality explode
+  |
+help: the trait `Unbounded_url_path` is not implemented for `Checked`
+ --> tests/ui/fail_unbounded_metric_attribute.rs:1:1
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/unbounded-metric.yaml");
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  = note: use a bounded attribute, or mark `url.path` `cardinality: bounded` on this metric's reference in the registry if its values really are bounded here
+help: this trait has no implementations, consider adding one
+ --> tests/ui/fail_unbounded_metric_attribute.rs:1:1
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/unbounded-metric.yaml");
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+note: required for `duration::Builder` to implement `With<url_path>`
+ --> tests/ui/fail_unbounded_metric_attribute.rs:1:1
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/unbounded-metric.yaml");
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,42 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+assertion_line: 81
+expression: "pretty(quote!(fn f() { #out }))"
+---
+fn f() {
+    {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        #[allow(unused_imports)]
+        use ::org::metrics as __semlex_root;
+        #[allow(dead_code)]
+        const __SEMLEX_SCOPE: __semlex_rt::Scope = __semlex_rt::Scope {
+            prefix: __semlex_reg::SCOPE_PREFIX,
+            name: ::core::env!("CARGO_PKG_NAME"),
+            version: ::core::env!("CARGO_PKG_VERSION"),
+            schema_url: __semlex_reg::SCHEMA_URL,
+        };
+        let __semlex_b = __semlex_root::http::server::duration::builder();
+        const _: () = {
+            __semlex_attr::http::request::method.check_usable();
+            __semlex_attr::http::request::method.check_literal("GET");
+        };
+        let __semlex_b = __semlex_b
+            .with(
+                __semlex_attr::http::request::method,
+                __semlex_attr::http::request::method.literal("GET"),
+            );
+        const _: () = {
+            __semlex_attr::http::route.check_usable();
+        };
+        let __semlex_b = __semlex_b.with(__semlex_attr::http::route, route);
+        static __SEMLEX_SITE: __semlex_rt::MetricSite<
+            __semlex_root::http::server::duration::Instrument,
+        > = __semlex_rt::MetricSite::new();
+        __semlex_b.measure(elapsed, &__SEMLEX_SITE, &__SEMLEX_SCOPE)
+    }
+}

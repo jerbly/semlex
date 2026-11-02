@@ -1,0 +1,36 @@
+# A metric referencing an attribute annotated `cardinality: unbounded`, which
+# the registry policy would reject; registry!() must reject its use too.
+file_format: resolved/2.0
+schema_url: https://example.com/1.0
+attribute_catalog:
+- key: http.route
+  type: string
+  brief: Route template.
+  stability: stable
+- key: url.path
+  type: string
+  brief: URL path.
+  stability: stable
+  annotations:
+    cardinality: unbounded
+registry:
+  attributes: [0, 1]
+  attribute_groups: []
+  spans: []
+  metrics:
+  - name: http.server.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 0
+      requirement_level: required
+    - base: 1
+      requirement_level: recommended
+    brief: Request duration.
+    stability: stable
+  events: []
+  entities: []
+refinements:
+  spans: []
+  metrics: []
+  events: []

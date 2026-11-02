@@ -1,0 +1,4 @@
+file_format: definition_manifest/2.0
+schema_url: https://semlex.example/schemas/dep/1.0.0
+description: A dependency registry defining shared attributes.
+stability: development

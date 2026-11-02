@@ -1,0 +1,17 @@
+[package]
+name = "otel-stress"
+description = "Example registry crate over all of OpenTelemetry semconv (stress test)."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+semlex = { path = "../../crates/semlex" }
+
+[features]
+semlex-unstable = []
+
+[lints]
+workspace = true

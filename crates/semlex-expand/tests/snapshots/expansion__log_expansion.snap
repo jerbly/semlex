@@ -1,0 +1,43 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: "pretty(quote!(fn f() { #out; }))"
+---
+fn f() {
+    {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        #[allow(unused_imports)]
+        use ::org::groups as __semlex_groups;
+        let __semlex_g = __semlex_groups::exception::builder();
+        let __semlex_g = __semlex_g.check_with(__semlex_attr::exception::r#type);
+        let __semlex_g = __semlex_g.check_with(__semlex_attr::exception::message);
+        __semlex_g.check();
+        const _: () = {
+            __semlex_attr::http::route.check_usable();
+        };
+        let __semlex_v0 = __semlex_rt::log_field(__semlex_attr::http::route, route);
+        const _: () = {
+            __semlex_attr::exception::r#type.check_usable();
+            __semlex_attr::exception::r#type.check_literal("E");
+        };
+        let __semlex_v1 = __semlex_rt::log_field(
+            __semlex_attr::exception::r#type,
+            __semlex_attr::exception::r#type.literal("E"),
+        );
+        const _: () = {
+            __semlex_attr::exception::message.check_usable();
+        };
+        let __semlex_v2 = __semlex_rt::log_field(__semlex_attr::exception::message, msg);
+        __semlex_rt::tracing::event!(
+            name : "", __semlex_rt::tracing::Level::WARN, { { __semlex_rt::key_of(&
+            __semlex_attr::http::route) } = __semlex_v0, { __semlex_rt::key_of(&
+            __semlex_attr::exception::r#type) } = __semlex_v1, { __semlex_rt::key_of(&
+            __semlex_attr::exception::message) } = __semlex_v2 },
+            "upstream timed out after {}ms", 250
+        )
+    };
+}

@@ -1,0 +1,48 @@
+error[E0277]: `DoubleArrayValue` attributes can't be logged through `tracing`
+ --> tests/ui/fail_log_array.rs:4:11
+  |
+4 |     warn!(demo.weights: vec![0.5, 0.5], "rebalanced");
+  |           ----^^^^^^^^
+  |           |
+  |           arrays and `any` values have no `tracing` field type
+  |           required by a bound introduced by this call
+  |
+  = help: the trait `LogKind` is not implemented for `DoubleArrayValue`
+  = note: emit an event with `event!` (the OpenTelemetry Logs API) to record this attribute
+  = help: the following other types implement trait `LogKind`:
+            BoolValue
+            DemoCacheHit
+            DoubleValue
+            HttpRequestMethod
+            IntValue
+            Pii<K>
+            RpcGrpcStatusCode
+            ServiceTier
+          and $N others
+note: required by a bound in `log_field`
+ --> $WORKSPACE/crates/semlex/src/log.rs
+  |
+  | pub fn log_field<A, V>(attribute: A, value: V) -> <A::Kind as LogKind>::Field
+  |        --------- required by a bound in this function
+...
+  |     A::Kind: LogKind,
+  |              ^^^^^^^ required by this bound in `log_field`
+
+error[E0277]: `DoubleArrayValue` attributes can't be logged through `tracing`
+ --> tests/ui/fail_log_array.rs:4:11
+  |
+4 |     warn!(demo.weights: vec![0.5, 0.5], "rebalanced");
+  |           ^^^^ arrays and `any` values have no `tracing` field type
+  |
+  = help: the trait `LogKind` is not implemented for `DoubleArrayValue`
+  = note: emit an event with `event!` (the OpenTelemetry Logs API) to record this attribute
+  = help: the following other types implement trait `LogKind`:
+            BoolValue
+            DemoCacheHit
+            DoubleValue
+            HttpRequestMethod
+            IntValue
+            Pii<K>
+            RpcGrpcStatusCode
+            ServiceTier
+          and $N others

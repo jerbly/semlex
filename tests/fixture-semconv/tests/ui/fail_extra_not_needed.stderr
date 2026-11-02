@@ -1,0 +1,17 @@
+error: `extra(…)` is for signals; here any registry attribute is allowed: write `http.route: …`
+ --> tests/ui/fail_extra_not_needed.rs:4:20
+  |
+4 |     let _ = attrs![extra(http.route): "/"];
+  |                    ^^^^^
+
+error: `extra(…)` attributes can't be used on entities: an entity's attributes identify it, so they must be the ones the registry defines for it
+ --> tests/ui/fail_extra_not_needed.rs:5:44
+  |
+5 |     let _ = entity!(host { host.name: "h", extra(http.route): "/" });
+  |                                            ^^^^^
+
+error: `extra(…)` is for signals; here any registry attribute is allowed: write `http.route: …`
+ --> tests/ui/fail_extra_not_needed.rs:6:28
+  |
+6 |     fixture_semconv::warn!(extra(http.route): "/", "x");
+  |                            ^^^^^

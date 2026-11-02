@@ -1,0 +1,45 @@
+error[E0277]: this attribute is required and not set yet: `key?: option` and `record!(&span, …)` can't set it
+ --> tests/ui/fail_optional_required.rs:7:56
+  |
+7 |     let span = record!(span, demo.tenant.code: "ACME", url.path?: path);
+  |                                                        ^^^ required, and not set yet
+  |
+  = help: the trait `fixture_semconv::semlex::__private::InPlace<fixture_semconv::spans::http::server::request::Builder<Set, Set, Unset, Set, fixture_semconv::spans::http::server::request::Started>>` is not implemented for `fixture_semconv::spans::http::server::request::Builder<Set, Set, Set, Set, fixture_semconv::spans::http::server::request::Started>`
+  = note: give it a value (`key: value`); on a started span, `let span = record!(span, key: value)` returns the span with the attribute marked as set. `key?:` and `record!(&span, …)` work for other attributes, and for required ones once they're set
+note: required by a bound in `fixture_semconv::semlex::__private::with_opt`
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |     pub fn with_opt<B, V, O: InPlace<B>>(
+  |                              ^^^^^^^^^^ required by this bound in `with_opt`
+
+error[E0277]: missing required attribute `url.path` on span `http.server.request`
+ --> tests/ui/fail_optional_required.rs:8:10
+  |
+8 |     span.end();
+  |          ^^^ `url.path` is required here
+  |
+  = help: the trait `Required_url_path` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, url.path: <value>)` before `end()`
+help: the trait `Required_url_path` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::spans::http::server::request::Builder::<P0, P1, P2, P3, fixture_semconv::spans::http::server::request::Started>::end`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::end`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

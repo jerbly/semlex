@@ -1,0 +1,5 @@
+error: unsupported registry file_format `resolved/3.0`; semlex reads `resolved/2.0` (produce it with `weaver registry package --v2`)
+ --> tests/ui/fail_wrong_file_format.rs:1:19
+  |
+1 | semlex::registry!("../../../../crates/semlex/tests/ui/data/wrong-format.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

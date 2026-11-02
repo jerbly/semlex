@@ -1,0 +1,22 @@
+error[E0080]: evaluation panicked: value "QUERY" of `http.request.method` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items
+ --> tests/ui/fail_unstable_enum_member.rs:4:20
+  |
+4 |     let _ = attrs![http.request.method: "QUERY"];
+  |                    ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `http_request_method::check_literal`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_display(&$arg);
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__- in this macro invocation

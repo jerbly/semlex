@@ -1,0 +1,31 @@
+error[E0277]: missing required attribute `session.id` on event `session.start`
+ --> tests/ui/fail_event_missing_required.rs:4:12
+  |
+4 |     event!(session.start {});
+  |            ^^^^^^^ `session.id` is required here
+  |
+  = help: the trait `fixture_semconv::events::session::start::Required_session_id` is not implemented for `Unset`
+  = note: add `session.id: <value>` to the `event!` attributes
+help: the trait `fixture_semconv::events::session::start::Required_session_id` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::events::session::start::Builder::<P0, C>::emit`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, C>::emit`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

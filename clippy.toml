@@ -1,0 +1,8 @@
+# Every `unregistered("…")` and `extra(…)` use calls one of these markers; CI runs clippy with
+# `-D warnings`, so unapproved uses fail. Approve one in the macro
+# (`reviewed: "why"`), or with `#[allow(deprecated, clippy::disallowed_methods)]`
+# on a `let` or item.
+disallowed-methods = [
+    { path = "semlex::__private::unregistered_attribute", reason = "attribute is not in the semantic-convention registry; add it to the registry instead of using `unregistered(…)`" },
+    { path = "semlex::__private::extra_attribute", reason = "the signal doesn't define this registry attribute; add it to the signal in the registry instead of using `extra(…)`" },
+]

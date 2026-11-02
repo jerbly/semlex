@@ -1,0 +1,1066 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: text
+---
+#[doc(hidden)]
+pub use ::semlex as __semlex;
+#[doc(hidden)]
+pub mod __semlex_registry {
+    /// Every attribute key in the registry, sorted.
+    pub const ATTRIBUTE_KEYS: &[&str] = &[
+        "cache.hit",
+        "http.method",
+        "http.request.header",
+        "http.request.method",
+        "http.response.status_code",
+        "http.route",
+        "rpc.grpc.status_code",
+    ];
+    /// Prefixes of the registry's template attributes.
+    pub const TEMPLATE_PREFIXES: &[&str] = &["http.request.header"];
+    /// The registry's schema URL.
+    pub const SCHEMA_URL: &str = "https://example.com/schemas/1.0.0";
+    /// Prefix for call sites' instrumentation scope names.
+    pub const SCOPE_PREFIX: &str = "";
+    /// Whether the registry crate's `semlex-unstable` feature is enabled.
+    pub const ALLOW_UNSTABLE: bool = cfg!(feature = "semlex-unstable");
+    /// Entity identity attribute keys, referenced by associations.
+    pub mod entity_identity {}
+}
+/// Attribute marker types, with their hooks.
+#[allow(non_camel_case_types)]
+pub mod attr_types {
+    /// Cache outcome.
+    #[derive(Clone, Copy, Debug)]
+    pub struct cache_hit;
+    impl ::semlex::Attribute for cache_hit {
+        const KEY: &'static str = "cache.hit";
+        type Kind = crate::enums::CacheHit;
+    }
+    impl cache_hit {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        const MEMBERS: &'static [bool] = &[true, false];
+        const STABLE: &'static [bool] = &[true, true];
+        const UNSTABLE: &'static [&'static str] = &["", ""];
+        /// Compile-time check of a literal value.
+        pub const fn check_literal(&self, value: bool) {
+            let mut i = 0;
+            while i < Self::MEMBERS.len() {
+                if Self::MEMBERS[i] == value {
+                    if !Self::STABLE[i] && !crate::__semlex_registry::ALLOW_UNSTABLE {
+                        panic!("{}", Self::UNSTABLE[i])
+                    }
+                    return;
+                }
+                i += 1;
+            }
+            panic!("unknown value for `cache.hit`; known values: true, false")
+        }
+        /// A checked literal as a value.
+        pub const fn literal(&self, value: bool) -> crate::enums::CacheHit {
+            crate::enums::CacheHit::from_bool(value)
+        }
+    }
+    /// Deprecated.
+    #[derive(Clone, Copy, Debug)]
+    pub struct http_method;
+    impl ::semlex::Attribute for http_method {
+        const KEY: &'static str = "http.method";
+        type Kind = ::semlex::kind::StringValue;
+    }
+    impl http_method {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Literals can't be checked further; the value check reports the type.
+        pub const fn check_literal<T>(&self, value: T) {
+            ::std::mem::forget(value)
+        }
+        /// A string literal as a value, uncopied; other literals pass through.
+        pub fn literal<T: ::semlex::__private::StringLiteral>(
+            &self,
+            value: T,
+        ) -> T::Out {
+            value.literal()
+        }
+    }
+    /// HTTP request headers.
+    #[derive(Clone, Copy, Debug)]
+    pub struct http_request_header;
+    impl ::semlex::TemplateAttribute for http_request_header {
+        const PREFIX: &'static str = "http.request.header";
+        type Kind = ::semlex::kind::StringArrayValue;
+    }
+    impl http_request_header {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// This template attribute with a key suffix: `<prefix>.<suffix>`.
+        pub fn key(
+            &self,
+            suffix: impl Into<::std::borrow::Cow<'static, str>>,
+        ) -> ::semlex::Templated<Self> {
+            ::semlex::Templated {
+                attribute: *self,
+                suffix: suffix.into(),
+            }
+        }
+    }
+    /// HTTP request method.
+    #[derive(Clone, Copy, Debug)]
+    pub struct http_request_method;
+    impl ::semlex::Attribute for http_request_method {
+        const KEY: &'static str = "http.request.method";
+        type Kind = crate::enums::HttpRequestMethod;
+    }
+    impl http_request_method {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        const MEMBERS: &'static [&'static str] = &["GET", "QUERY"];
+        const STABLE: &'static [bool] = &[true, false];
+        const DID_YOU_MEAN: &'static [&'static str] = &[
+            "unknown value for `http.request.method`; did you mean \"GET\"? Use `custom(\"…\")` for values outside the registry",
+            "unknown value for `http.request.method`; did you mean \"QUERY\"? Use `custom(\"…\")` for values outside the registry",
+        ];
+        const UNSTABLE: &'static [&'static str] = &[
+            "",
+            "value \"QUERY\" of `http.request.method` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items",
+        ];
+        /// Compile-time check of a literal value.
+        pub const fn check_literal(&self, value: &str) {
+            if false {
+                return;
+            }
+            use ::semlex::__private::rt::{Lookup, lookup};
+            match lookup(value, Self::MEMBERS) {
+                Lookup::Found(i) => {
+                    if !Self::STABLE[i] && !crate::__semlex_registry::ALLOW_UNSTABLE {
+                        panic!("{}", Self::UNSTABLE[i])
+                    }
+                }
+                Lookup::Closest(i) => panic!("{}", Self::DID_YOU_MEAN[i]),
+                Lookup::Unknown => {
+                    panic!(
+                        "unknown value for `http.request.method`; known values: \"GET\", \"QUERY\". Use `custom(\"…\")` for values outside the registry"
+                    )
+                }
+            }
+        }
+        /// Compile-time check that a `custom(…)` literal isn't a registry value.
+        pub const fn check_custom(&self, value: &str) {
+            if let ::semlex::__private::rt::Lookup::Found(_) = ::semlex::__private::rt::lookup(
+                value,
+                Self::MEMBERS,
+            ) {
+                panic!(
+                    "this value is in the registry for `http.request.method`: write it as a plain literal instead of `custom(…)`"
+                )
+            }
+        }
+        /// A checked literal as a value.
+        pub const fn literal(
+            &self,
+            value: &'static str,
+        ) -> crate::enums::HttpRequestMethod {
+            crate::enums::HttpRequestMethod::from_static(value)
+        }
+    }
+    /// HTTP response status code.
+    #[derive(Clone, Copy, Debug)]
+    pub struct http_response_status_code;
+    impl ::semlex::Attribute for http_response_status_code {
+        const KEY: &'static str = "http.response.status_code";
+        type Kind = ::semlex::kind::IntValue;
+    }
+    impl http_response_status_code {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Literals can't be checked further; the value check reports the type.
+        pub const fn check_literal<T>(&self, value: T) {
+            ::std::mem::forget(value)
+        }
+        /// Passes a literal through to the value check.
+        pub const fn literal<T>(&self, value: T) -> T {
+            value
+        }
+    }
+    /// The matched route template.
+    #[derive(Clone, Copy, Debug)]
+    pub struct http_route;
+    impl ::semlex::Attribute for http_route {
+        const KEY: &'static str = "http.route";
+        type Kind = ::semlex::kind::StringValue;
+    }
+    impl http_route {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {}
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        /// Literals can't be checked further; the value check reports the type.
+        pub const fn check_literal<T>(&self, value: T) {
+            ::std::mem::forget(value)
+        }
+        /// A string literal as a value, uncopied; other literals pass through.
+        pub fn literal<T: ::semlex::__private::StringLiteral>(
+            &self,
+            value: T,
+        ) -> T::Out {
+            value.literal()
+        }
+    }
+    /// gRPC status code.
+    #[derive(Clone, Copy, Debug)]
+    pub struct rpc_grpc_status_code;
+    impl ::semlex::Attribute for rpc_grpc_status_code {
+        const KEY: &'static str = "rpc.grpc.status_code";
+        type Kind = crate::enums::RpcGrpcStatusCode;
+    }
+    impl rpc_grpc_status_code {
+        /// Compile-time check that this attribute may be used here.
+        pub const fn check_usable(&self) {
+            if !crate::__semlex_registry::ALLOW_UNSTABLE {
+                panic!(
+                    "attribute `rpc.grpc.status_code` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items"
+                )
+            }
+        }
+        /// Compile-time check that this attribute may be added to a
+        /// metric with `extra(…)`.
+        pub const fn check_bounded(&self) {}
+        const MEMBERS: &'static [i64] = &[0i64, 1i64];
+        const STABLE: &'static [bool] = &[false, false];
+        const UNSTABLE: &'static [&'static str] = &[
+            "value 0 of `rpc.grpc.status_code` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items",
+            "value 1 of `rpc.grpc.status_code` is development; enable the `semlex-unstable` feature of `fixture-semconv` to use non-stable items",
+        ];
+        /// Compile-time check of a literal value.
+        pub const fn check_literal(&self, value: i64) {
+            match ::semlex::__private::rt::position_i64(value, Self::MEMBERS) {
+                Some(i) => {
+                    if !Self::STABLE[i] && !crate::__semlex_registry::ALLOW_UNSTABLE {
+                        panic!("{}", Self::UNSTABLE[i])
+                    }
+                }
+                None => {
+                    panic!(
+                        "unknown value for `rpc.grpc.status_code`; known values: 0, 1. Use `custom(…)` for values outside the registry"
+                    )
+                }
+            }
+        }
+        /// Compile-time check that a `custom(…)` literal isn't a registry value.
+        pub const fn check_custom(&self, value: i64) {
+            if ::semlex::__private::rt::position_i64(value, Self::MEMBERS).is_some() {
+                panic!(
+                    "this value is in the registry for `rpc.grpc.status_code`: write it as a plain literal instead of `custom(…)`"
+                )
+            }
+        }
+        /// A checked literal as a value.
+        pub const fn literal(&self, value: i64) -> crate::enums::RpcGrpcStatusCode {
+            crate::enums::RpcGrpcStatusCode::from_i64(value)
+        }
+    }
+}
+/// Enum attribute value types.
+#[allow(deprecated)]
+pub mod enums {
+    /// Values of `cache.hit`: Cache outcome.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[non_exhaustive]
+    pub enum CacheHit {
+        /// true
+        Hit,
+        /// false
+        Miss,
+    }
+    impl CacheHit {
+        /// The wire value.
+        pub const fn value(&self) -> bool {
+            match self {
+                Self::Hit => true,
+                Self::Miss => false,
+            }
+        }
+        /// The member with this wire value.
+        pub const fn from_bool(value: bool) -> Self {
+            match value {
+                true => Self::Hit,
+                false => Self::Miss,
+                #[allow(unreachable_patterns)]
+                _ => Self::Hit,
+            }
+        }
+    }
+    impl ::semlex::IntoValue<CacheHit> for CacheHit {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::Bool(self.value())
+        }
+    }
+    impl ::semlex::IntoValue<CacheHit> for &CacheHit {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::Bool(self.value())
+        }
+    }
+    impl ::semlex::__private::LogKind for CacheHit {
+        type Field = bool;
+        fn field(value: ::semlex::Value) -> bool {
+            matches!(value, ::semlex::Value::Bool(true))
+        }
+    }
+    /// Values of `http.request.method`: HTTP request method.
+    #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+    #[non_exhaustive]
+    pub enum HttpRequestMethod {
+        /// "GET"
+        Get,
+        /// "QUERY"
+        Query,
+        /// A value outside the registry.
+        Custom(::std::borrow::Cow<'static, str>),
+    }
+    impl HttpRequestMethod {
+        /// The wire value.
+        pub fn as_str(&self) -> &str {
+            match self {
+                Self::Get => "GET",
+                Self::Query => "QUERY",
+                Self::Custom(v) => v,
+            }
+        }
+        /// The member with this wire value, or `Custom` (owned).
+        pub fn from_wire(value: &str) -> Self {
+            match value {
+                "GET" => Self::Get,
+                "QUERY" => Self::Query,
+                other => Self::Custom(::std::borrow::Cow::Owned(other.to_string())),
+            }
+        }
+        /// The member with this wire value, or `Custom`.
+        pub const fn from_static(value: &'static str) -> Self {
+            if ::semlex::__private::rt::str_eq(value, "GET") {
+                return Self::Get;
+            }
+            if ::semlex::__private::rt::str_eq(value, "QUERY") {
+                return Self::Query;
+            }
+            Self::Custom(::std::borrow::Cow::Borrowed(value))
+        }
+    }
+    impl ::std::fmt::Display for HttpRequestMethod {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+            f.write_str(self.as_str())
+        }
+    }
+    impl ::semlex::IntoValue<HttpRequestMethod> for HttpRequestMethod {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            match self {
+                Self::Get => ::semlex::__private::opentelemetry::Value::from("GET"),
+                Self::Query => ::semlex::__private::opentelemetry::Value::from("QUERY"),
+                Self::Custom(v) => ::semlex::__private::opentelemetry::Value::from(v),
+            }
+        }
+    }
+    /// By reference, so one value can be recorded in several places
+    /// (the enum isn't `Copy`: `Custom` holds a string).
+    impl ::semlex::IntoValue<HttpRequestMethod> for &HttpRequestMethod {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            match self {
+                HttpRequestMethod::Get => {
+                    ::semlex::__private::opentelemetry::Value::from("GET")
+                }
+                HttpRequestMethod::Query => {
+                    ::semlex::__private::opentelemetry::Value::from("QUERY")
+                }
+                HttpRequestMethod::Custom(v) => {
+                    ::semlex::__private::opentelemetry::Value::from(v.clone())
+                }
+            }
+        }
+    }
+    impl ::semlex::__private::LogKind for HttpRequestMethod {
+        type Field = ::semlex::__private::tracing::field::DisplayValue<String>;
+        fn field(value: ::semlex::Value) -> Self::Field {
+            ::semlex::__private::text_field(value)
+        }
+    }
+    impl ::semlex::IntoValue<HttpRequestMethod> for ::semlex::Custom<&'static str> {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::from(self.0)
+        }
+    }
+    impl ::semlex::IntoValue<HttpRequestMethod> for ::semlex::Custom<String> {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::from(self.0)
+        }
+    }
+    /// Values of `rpc.grpc.status_code`: gRPC status code.
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[non_exhaustive]
+    pub enum RpcGrpcStatusCode {
+        /// 0
+        Ok,
+        /// 1
+        Cancelled,
+        /// A value outside the registry.
+        Custom(i64),
+    }
+    impl RpcGrpcStatusCode {
+        /// The wire value.
+        pub const fn value(&self) -> i64 {
+            match self {
+                Self::Ok => 0i64,
+                Self::Cancelled => 1i64,
+                Self::Custom(v) => *v,
+            }
+        }
+        /// The member with this wire value, or `Custom`.
+        pub const fn from_i64(value: i64) -> Self {
+            match value {
+                0i64 => Self::Ok,
+                1i64 => Self::Cancelled,
+                v => Self::Custom(v),
+            }
+        }
+    }
+    impl ::semlex::IntoValue<RpcGrpcStatusCode> for RpcGrpcStatusCode {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::I64(self.value())
+        }
+    }
+    impl ::semlex::IntoValue<RpcGrpcStatusCode> for &RpcGrpcStatusCode {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::I64(self.value())
+        }
+    }
+    impl ::semlex::__private::LogKind for RpcGrpcStatusCode {
+        type Field = i64;
+        fn field(value: ::semlex::Value) -> i64 {
+            match value {
+                ::semlex::Value::I64(i) => i,
+                _ => 0,
+            }
+        }
+    }
+    impl ::semlex::IntoValue<RpcGrpcStatusCode> for ::semlex::Custom<i64> {
+        fn into_value(self) -> ::semlex::__private::opentelemetry::Value {
+            ::semlex::__private::opentelemetry::Value::I64(self.0)
+        }
+    }
+}
+/// Registry attributes, by dotted name: `attr::http::request::method`.
+#[allow(non_upper_case_globals)]
+pub mod attr {
+    /// Attributes under `cache`.
+    pub mod cache {
+        /// Cache outcome.
+        pub const hit: crate::attr_types::cache_hit = crate::attr_types::cache_hit;
+    }
+    /// Attributes under `http`.
+    pub mod http {
+        /// Deprecated.
+        #[deprecated(note = "renamed to `http.request.method`")]
+        pub const method: crate::attr_types::http_method = crate::attr_types::http_method;
+        /// The matched route template.
+        pub const route: crate::attr_types::http_route = crate::attr_types::http_route;
+        /// Attributes under `http.request`.
+        pub mod request {
+            /// HTTP request headers.
+            pub const header: crate::attr_types::http_request_header = crate::attr_types::http_request_header;
+            /// HTTP request method.
+            pub const method: crate::attr_types::http_request_method = crate::attr_types::http_request_method;
+        }
+        /// Attributes under `http.response`.
+        pub mod response {
+            /// HTTP response status code.
+            pub const status_code: crate::attr_types::http_response_status_code = crate::attr_types::http_response_status_code;
+        }
+    }
+    /// Attributes under `rpc`.
+    pub mod rpc {
+        /// Attributes under `rpc.grpc`.
+        pub mod grpc {
+            /// gRPC status code.
+            pub const status_code: crate::attr_types::rpc_grpc_status_code = crate::attr_types::rpc_grpc_status_code;
+        }
+    }
+}
+/// Span builders, by span type.
+#[allow(non_camel_case_types)]
+pub mod spans {
+    /// Spans under `http`.
+    pub mod http {
+        /// Spans under `http.server`.
+        pub mod server {
+            #[diagnostic::on_unimplemented(
+                message = "`{A}` is not an attribute of span `http.server`",
+                label = "not an attribute of this span",
+                note = "span `http.server` defines: `http.request.method`, `http.response.status_code`, `http.route`. Use one of those, or add this attribute to the span in the registry (attribute types are named after their keys with `.` as `_`)"
+            )]
+            /// Membership: implemented by the builder for each member attribute.
+            pub trait With<A> {
+                /// The builder after setting `A`.
+                type Out;
+                #[doc(hidden)]
+                fn advance(self) -> Self::Out;
+            }
+            /// The builder's check state. Bounds on it that never hold carry
+            /// attribute-specific errors.
+            #[doc(hidden)]
+            pub struct Checked;
+            /// No attribute: a second `With` candidate, so rustc never infers
+            /// the attribute type from a lone impl and always reports this
+            /// group's own messages.
+            #[doc(hidden)]
+            pub enum __NotAnAttribute {}
+            #[diagnostic::on_unimplemented(
+                message = "missing required attribute `http.request.method` on span `http.server`",
+                label = "`http.request.method` is required here",
+                note = "set it in `span!`, or with `record!(span, http.request.method: <value>)` before `end()`"
+            )]
+            /// Requirement: `http.request.method` is set.
+            pub trait Required_http_request_method {}
+            impl Required_http_request_method for ::semlex::Set {}
+            #[diagnostic::on_unimplemented(
+                message = "missing required attribute `http.response.status_code` on span `http.server`",
+                label = "`http.response.status_code` is required here",
+                note = "set it in `span!`, or with `record!(span, http.response.status_code: <value>)` before `end()`"
+            )]
+            /// Requirement: `http.response.status_code` is set.
+            pub trait Required_http_response_status_code {}
+            impl Required_http_response_status_code for ::semlex::Set {}
+            #[diagnostic::on_unimplemented(
+                message = "missing sampling-relevant attribute `http.request.method` on span `http.server`",
+                label = "`http.request.method` must be set when the span starts",
+                note = "add `http.request.method: <value>` to `span!`; samplers only see attributes given at start"
+            )]
+            /// Sampling-relevant: `http.request.method` is set at start.
+            pub trait AtStart_http_request_method {}
+            impl AtStart_http_request_method for ::semlex::Set {}
+            /// An HTTP server span.
+            pub struct Builder<P0 = ::semlex::Unset, P1 = ::semlex::Unset, C = Checked> {
+                attributes: ::std::vec::Vec<
+                    ::semlex::__private::opentelemetry::KeyValue,
+                >,
+                phase: C,
+                _state: ::std::marker::PhantomData<(P0, P1)>,
+            }
+            /// An HTTP server span.
+            pub fn builder() -> Builder {
+                Builder {
+                    attributes: ::std::vec::Vec::new(),
+                    phase: Checked,
+                    _state: ::std::marker::PhantomData,
+                }
+            }
+            impl<P0, P1, C> Builder<P0, P1, C> {
+                fn retype<P02, P12>(self) -> Builder<P02, P12, C> {
+                    Builder {
+                        attributes: self.attributes,
+                        phase: self.phase,
+                        _state: ::std::marker::PhantomData,
+                    }
+                }
+            }
+            impl<P0, P1, C> ::semlex::__private::Members for Builder<P0, P1, C> {
+                const MEMBERS: &'static [&'static str] = &[
+                    "http.request.method",
+                    "http.response.status_code",
+                    "http.route",
+                ];
+            }
+            impl<P0, P1> Builder<P0, P1, Checked> {
+                /// Sets a member attribute.
+                pub fn with<A: ::semlex::Attribute, V: ::semlex::IntoValue<A::Kind>>(
+                    mut self,
+                    attribute: A,
+                    value: V,
+                ) -> <Self as With<A>>::Out
+                where
+                    Self: With<A>,
+                {
+                    self.attributes.push(::semlex::__private::kv(attribute, value));
+                    self.advance()
+                }
+                /// Sets an `unregistered("…")` attribute (no membership check).
+                #[doc(hidden)]
+                pub fn with_unregistered(
+                    mut self,
+                    attribute: ::semlex::__private::opentelemetry::KeyValue,
+                ) -> Self {
+                    self.attributes.push(attribute);
+                    self
+                }
+            }
+            /// This span type, for `SpanCore::start`.
+            pub static TYPE: ::semlex::__private::SpanType = ::semlex::__private::SpanType {
+                id: "http.server",
+                kind: ::semlex::__private::opentelemetry::trace::SpanKind::Server,
+                opt_in: false,
+                names: ::semlex::__private::NameSpec {
+                    templates: &[
+                        &[::semlex::__private::NamePart::Attr("http.request.method")],
+                    ],
+                    keys: &["http.request.method"],
+                    can_change: false,
+                    fallback: "http.server",
+                },
+                associations: ::semlex::__private::Associations {
+                    kind: "span",
+                    signal: "http.server",
+                    expressions: &[],
+                },
+            };
+            #[diagnostic::on_unimplemented(
+                message = "span `http.server` has no name template: pass `name: …` to `span!`",
+                label = "this span needs a name",
+                note = "the registry describes this span's name in prose (`name.note`), so the call site must name it"
+            )]
+            #[doc(hidden)]
+            pub trait HasName {}
+            impl HasName for ::semlex::__private::Named {}
+            impl HasName for ::semlex::__private::NoName {}
+            /// The started phase: the span itself.
+            #[doc(hidden)]
+            pub struct Started(::semlex::__private::SpanCore);
+            /// This span, started, with every required attribute set: the type a
+            /// helper can return or take (`&Ready`) to share a span's setup, record
+            /// with membership checks, and `end()` it.
+            pub type Ready = Builder<::semlex::Set, ::semlex::Set, Started>;
+            impl<P0, P1> Builder<P0, P1, Checked> {
+                /// Starts the span with the attributes set so far, so samplers see them.
+                pub fn start<N: HasName + ::semlex::__private::SpanName>(
+                    self,
+                    site: &'static ::semlex::__private::SpanSite,
+                    scope: &::semlex::__private::Scope,
+                    options: ::semlex::__private::StartOptions,
+                    name: N,
+                ) -> Builder<P0, P1, Started>
+                where
+                    P0: AtStart_http_request_method,
+                {
+                    let core = ::semlex::__private::SpanCore::start(
+                        site,
+                        scope,
+                        &TYPE,
+                        self.attributes,
+                        options,
+                        name.into_name(),
+                    );
+                    Builder {
+                        attributes: ::std::vec::Vec::new(),
+                        phase: Started(core),
+                        _state: ::std::marker::PhantomData,
+                    }
+                }
+            }
+            impl<P0, P1> ::std::ops::Deref for Builder<P0, P1, Started> {
+                type Target = ::semlex::__private::SpanCore;
+                fn deref(&self) -> &Self::Target {
+                    &self.phase.0
+                }
+            }
+            impl<P0, P1> Builder<P0, P1, Started> {
+                /// Sets a member attribute after start (`record!`).
+                pub fn with<A: ::semlex::Attribute, V: ::semlex::IntoValue<A::Kind>>(
+                    mut self,
+                    attribute: A,
+                    value: V,
+                ) -> <Self as With<A>>::Out
+                where
+                    Self: With<A>,
+                {
+                    self.phase
+                        .0
+                        .set(
+                            ::semlex::__private::kv(attribute, value),
+                            ::semlex::__private::INTERNAL,
+                        );
+                    self.advance()
+                }
+                /// Sets an `unregistered("…")` attribute after start (no membership check).
+                #[doc(hidden)]
+                pub fn with_unregistered(
+                    mut self,
+                    attribute: ::semlex::__private::opentelemetry::KeyValue,
+                ) -> Self {
+                    self.phase.0.set(attribute, ::semlex::__private::INTERNAL);
+                    self
+                }
+                /// Ends the span; every required attribute must be set.
+                pub fn end(mut self)
+                where
+                    P1: Required_http_response_status_code,
+                {
+                    self.phase.0.end(None, ::semlex::__private::INTERNAL);
+                }
+                /// Ends the span at a given time; every required attribute must be set.
+                pub fn end_at(mut self, time: ::std::time::SystemTime)
+                where
+                    P1: Required_http_response_status_code,
+                {
+                    self.phase.0.end(Some(time), ::semlex::__private::INTERNAL);
+                }
+                /// This span as [`Ready`], for a function that returns it: every
+                /// required attribute must be set, and each missing one is named
+                /// (returning the span directly would only show a type mismatch).
+                pub fn ready(self) -> Ready
+                where
+                    P1: Required_http_response_status_code,
+                {
+                    Builder {
+                        attributes: self.attributes,
+                        phase: self.phase,
+                        _state: ::std::marker::PhantomData,
+                    }
+                }
+                /// Records the error, sets an error status and ends the span
+                /// (required attributes aren't checked on error paths).
+                pub fn end_with_error(mut self, error: &dyn ::std::error::Error) {
+                    self.phase.0.end_with_error(error);
+                }
+                /// Leaves semlex: the context holding the span.
+                pub fn into_otel(self) -> ::semlex::__private::opentelemetry::Context {
+                    self.phase.0.into_otel()
+                }
+            }
+            #[diagnostic::do_not_recommend]
+            impl<P0, P1, C> With<__NotAnAttribute> for Builder<P0, P1, C> {
+                type Out = Self;
+                fn advance(self) -> Self::Out {
+                    self
+                }
+            }
+            #[diagnostic::on_unimplemented(
+                message = "`http.request.method` is sampling-relevant on span `http.server` and can't be recorded after start",
+                label = "set this in `span!` instead",
+                note = "samplers only see attributes given when the span starts"
+            )]
+            #[doc(hidden)]
+            pub trait BeforeStart_http_request_method {}
+            impl BeforeStart_http_request_method for Checked {}
+            impl<
+                P0,
+                P1,
+                C: BeforeStart_http_request_method,
+            > With<crate::attr_types::http_request_method> for Builder<P0, P1, C> {
+                type Out = Builder<::semlex::Set, P1, C>;
+                fn advance(self) -> Self::Out {
+                    self.retype()
+                }
+            }
+            #[diagnostic::do_not_recommend]
+            impl<P0, P1, C> With<crate::attr_types::http_response_status_code>
+            for Builder<P0, P1, C> {
+                type Out = Builder<P0, ::semlex::Set, C>;
+                fn advance(self) -> Self::Out {
+                    self.retype()
+                }
+            }
+            #[diagnostic::do_not_recommend]
+            impl<P0, P1, C> With<crate::attr_types::http_route> for Builder<P0, P1, C> {
+                type Out = Self;
+                fn advance(self) -> Self::Out {
+                    self
+                }
+            }
+        }
+    }
+}
+/// Metric builders, by metric name.
+#[allow(non_camel_case_types)]
+pub mod metrics {
+    /// Metrics under `http`.
+    pub mod http {
+        /// Metrics under `http.server`.
+        pub mod server {
+            /// Metrics under `http.server.duration`.
+            pub mod duration {
+                #[diagnostic::on_unimplemented(
+                    message = "`{A}` is not an attribute of metric `http.server.duration`",
+                    label = "not an attribute of this metric",
+                    note = "metric `http.server.duration` defines: `http.request.method`, `http.route`. Use one of those, or add this attribute to the metric in the registry (attribute types are named after their keys with `.` as `_`)"
+                )]
+                /// Membership: implemented by the builder for each member attribute.
+                pub trait With<A> {
+                    /// The builder after setting `A`.
+                    type Out;
+                    #[doc(hidden)]
+                    fn advance(self) -> Self::Out;
+                }
+                /// The builder's check state. Bounds on it that never hold carry
+                /// attribute-specific errors.
+                #[doc(hidden)]
+                pub struct Checked;
+                /// No attribute: a second `With` candidate, so rustc never infers
+                /// the attribute type from a lone impl and always reports this
+                /// group's own messages.
+                #[doc(hidden)]
+                pub enum __NotAnAttribute {}
+                #[diagnostic::on_unimplemented(
+                    message = "missing required attribute `http.request.method` on metric `http.server.duration`",
+                    label = "`http.request.method` is required here",
+                    note = "add `http.request.method: <value>` to the `metric!` attributes"
+                )]
+                /// Requirement: `http.request.method` is set.
+                pub trait Required_http_request_method {}
+                impl Required_http_request_method for ::semlex::Set {}
+                /// Request duration.
+                pub struct Builder<P0 = ::semlex::Unset, C = Checked> {
+                    attributes: ::std::vec::Vec<
+                        ::semlex::__private::opentelemetry::KeyValue,
+                    >,
+                    phase: C,
+                    _state: ::std::marker::PhantomData<(P0,)>,
+                }
+                /// Request duration.
+                pub fn builder() -> Builder {
+                    Builder {
+                        attributes: ::std::vec::Vec::new(),
+                        phase: Checked,
+                        _state: ::std::marker::PhantomData,
+                    }
+                }
+                impl<P0, C> Builder<P0, C> {
+                    fn retype<P02>(self) -> Builder<P02, C> {
+                        Builder {
+                            attributes: self.attributes,
+                            phase: self.phase,
+                            _state: ::std::marker::PhantomData,
+                        }
+                    }
+                }
+                impl<P0, C> ::semlex::__private::Members for Builder<P0, C> {
+                    const MEMBERS: &'static [&'static str] = &[
+                        "http.request.method",
+                        "http.route",
+                    ];
+                }
+                impl<P0> Builder<P0, Checked> {
+                    /// Sets a member attribute.
+                    pub fn with<A: ::semlex::Attribute, V: ::semlex::IntoValue<A::Kind>>(
+                        mut self,
+                        attribute: A,
+                        value: V,
+                    ) -> <Self as With<A>>::Out
+                    where
+                        Self: With<A>,
+                    {
+                        self.attributes.push(::semlex::__private::kv(attribute, value));
+                        self.advance()
+                    }
+                    /// Sets an `unregistered("…")` attribute (no membership check).
+                    #[doc(hidden)]
+                    pub fn with_unregistered(
+                        mut self,
+                        attribute: ::semlex::__private::opentelemetry::KeyValue,
+                    ) -> Self {
+                        self.attributes.push(attribute);
+                        self
+                    }
+                }
+                /// The metric name on the wire.
+                pub const NAME: &str = "http.server.duration";
+                /// Entity associations.
+                pub static ASSOCIATIONS: ::semlex::__private::Associations = ::semlex::__private::Associations {
+                    kind: "metric",
+                    signal: "http.server.duration",
+                    expressions: &[],
+                };
+                /// The UCUM unit.
+                pub const UNIT: &str = "s";
+                /// Whether the metric is opt-in (enabled with `semlex::Config::enable`).
+                pub const OPT_IN: bool = false;
+                /// The OpenTelemetry instrument.
+                pub type Instrument = ::semlex::__private::opentelemetry::metrics::Histogram<
+                    f64,
+                >;
+                /// What measurements this metric takes.
+                pub type Measure = ::semlex::__private::measure::Seconds;
+                /// Creates the instrument.
+                pub fn create(
+                    meter: &::semlex::__private::opentelemetry::metrics::Meter,
+                ) -> Instrument {
+                    meter
+                        .f64_histogram(NAME)
+                        .with_unit(UNIT)
+                        .with_description("Request duration.")
+                        .build()
+                }
+                impl<P0, C> Builder<P0, C> {
+                    /// Records a measurement with the attributes set (all required ones).
+                    pub fn measure<V: ::semlex::__private::IntoMeasurement<Measure>>(
+                        self,
+                        value: V,
+                        site: &'static ::semlex::__private::MetricSite<Instrument>,
+                        scope: &::semlex::__private::Scope,
+                    )
+                    where
+                        P0: Required_http_request_method,
+                    {
+                        if let Some(instrument) = site
+                            .instrument(NAME, OPT_IN, scope, &ASSOCIATIONS, create)
+                        {
+                            instrument
+                                .record(value.into_measurement(), &self.attributes);
+                        }
+                    }
+                }
+                #[diagnostic::do_not_recommend]
+                impl<P0, C> With<__NotAnAttribute> for Builder<P0, C> {
+                    type Out = Self;
+                    fn advance(self) -> Self::Out {
+                        self
+                    }
+                }
+                #[diagnostic::do_not_recommend]
+                impl<P0, C> With<crate::attr_types::http_request_method>
+                for Builder<P0, C> {
+                    type Out = Builder<::semlex::Set, C>;
+                    fn advance(self) -> Self::Out {
+                        self.retype()
+                    }
+                }
+                #[diagnostic::do_not_recommend]
+                impl<P0, C> With<crate::attr_types::http_route> for Builder<P0, C> {
+                    type Out = Self;
+                    fn advance(self) -> Self::Out {
+                        self
+                    }
+                }
+            }
+        }
+    }
+}
+/// Event builders, by event name.
+#[allow(non_camel_case_types)]
+pub mod events {}
+/// Entity builders, by entity type.
+#[allow(non_camel_case_types)]
+pub mod entities {}
+/// Public attribute groups, by id.
+#[allow(non_camel_case_types)]
+pub mod groups {}
+/// `attrs![key: value, …]`: registry-checked `[KeyValue; N]`.
+#[macro_export]
+macro_rules! attrs {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::attrs!($crate; $($t)*)
+    };
+}
+/// `metric!(name: value, { key: value, … })`: records a measurement.
+#[macro_export]
+macro_rules! metric {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::metric!($crate; $($t)*)
+    };
+}
+/// `event!(name { key: value, … })`: emits an event.
+#[macro_export]
+macro_rules! event {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::event!($crate; $($t)*)
+    };
+}
+/// `span!(type { key: value, … }, options…)`: starts a span.
+#[macro_export]
+macro_rules! span {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::span!($crate; $($t)*)
+    };
+}
+/// `info!(key: value, …, "message", args…)`: a registry-checked `tracing` event.
+#[macro_export]
+macro_rules! info {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::log!($crate; info; $($t)*)
+    };
+}
+/// `warn!(key: value, …, "message", args…)`: a registry-checked `tracing` event.
+#[macro_export]
+macro_rules! warn {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::log!($crate; warn; $($t)*)
+    };
+}
+/// `error!(key: value, …, "message", args…)`: a registry-checked `tracing` event.
+#[macro_export]
+macro_rules! error {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::log!($crate; error; $($t)*)
+    };
+}
+/// `debug!(key: value, …, "message", args…)`: a registry-checked `tracing` event.
+#[macro_export]
+macro_rules! debug {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::log!($crate; debug; $($t)*)
+    };
+}
+/// `trace!(key: value, …, "message", args…)`: a registry-checked `tracing` event.
+#[macro_export]
+macro_rules! trace {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::log!($crate; trace; $($t)*)
+    };
+}
+/// `assert_span!(telemetry, type { key: value, … })`: a finished span of this type has these attributes (`semlex::testing`).
+#[macro_export]
+macro_rules! assert_span {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::assert_signal!($crate; span; $($t)*)
+    };
+}
+/// `assert_metric!(telemetry, name { key: value, … })`: this metric was recorded with these attributes (`semlex::testing`).
+#[macro_export]
+macro_rules! assert_metric {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::assert_signal!($crate; metric; $($t)*)
+    };
+}
+/// `assert_event!(telemetry, name { key: value, … })`: this event was emitted with these attributes (`semlex::testing`).
+#[macro_export]
+macro_rules! assert_event {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::assert_signal!($crate; event; $($t)*)
+    };
+}
+/// `entity!(type { key: value, … })`: an entity's attributes for the Resource.
+#[macro_export]
+macro_rules! entity {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::entity!($crate; $($t)*)
+    };
+}
+/// `record!(span, key: value, …)`: sets attributes, returning the span.
+#[macro_export]
+macro_rules! record {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::record!($crate; $($t)*)
+    };
+}
+/// `end!(span, error: &e, error.type: class)` or `end!(span, result: &r, error.type: |e| class)`: ends a span following the error conventions, with the checked `end()`.
+#[macro_export]
+macro_rules! end {
+    ($($t:tt)*) => {
+        $crate::__semlex::__private::end!($crate; $($t)*)
+    };
+}
+const _: &[u8] = include_bytes!(
+    "$DATA/small.yaml"
+);

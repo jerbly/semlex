@@ -1,0 +1,21 @@
+error[E0277]: `&str` is not a valid value here: this attribute takes a `HttpRequestMethod`
+ --> tests/ui/fail_enum_runtime_str.rs:5:41
+  |
+5 |     let _ = attrs![http.request.method: m];
+  |                    ----                 ^ expected a `HttpRequestMethod`
+  |                    |
+  |                    required by a bound introduced by this call
+  |
+  = note: `StringValue`: `&str`, `&String`, `String`, `Cow<'static, str>`, `Arc<str>` | `IntValue`: any integer up to 64 bits (`u64`/`usize` saturate at `i64::MAX`) | `DoubleValue`: `f64`, `f32` | `BoolValue`: `bool` | arrays: `Vec<…>` of those | enums: the enum, a string literal, or `custom(…)` | `Pii<…>` (`sensitivity: pii`): wrap the value in `redacted(…)` or `hashed(…)` | `Typed<K, T>` (`code_generation.rust.type`): pass a `T`
+help: the trait `IntoValue<HttpRequestMethod>` is not implemented for `&str`
+      but trait `IntoValue<StringValue>` is implemented for it
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  | impl IntoValue<kind::StringValue> for &str {
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  = help: for that trait implementation, expected `StringValue`, found `HttpRequestMethod`
+note: required by a bound in `fixture_semconv::semlex::__private::kv`
+ --> $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |     pub fn kv<A: Attribute, V: IntoValue<A::Kind>>(attribute: A, value: V) -> KeyValue {
+  |                                ^^^^^^^^^^^^^^^^^^ required by this bound in `kv`

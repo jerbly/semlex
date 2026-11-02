@@ -1,0 +1,84 @@
+error[E0277]: event refinement `session.start.web` can't be emitted yet: Weaver (as of 0.28) doesn't record which event it refines, so its `event_name` is unknown
+ --> tests/ui/fail_event_refinement.rs:4:12
+  |
+4 |     event!(session.start.web {});
+  |            ^^^^^^^ event refinements can't be emitted yet
+  |
+  = help: the trait `fixture_semconv::events::session::start::web::BaseEventUnknown` is not implemented for `fixture_semconv::events::session::start::web::Checked`
+  = note: emit the base event instead; see https://github.com/open-telemetry/weaver/issues/1836
+note: required by a bound in `fixture_semconv::events::session::start::web::Builder::<P0, P1, C>::emit`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, C>::emit`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `session.id` on event `session.start.web`
+ --> tests/ui/fail_event_refinement.rs:4:12
+  |
+4 |     event!(session.start.web {});
+  |            ^^^^^^^ `session.id` is required here
+  |
+  = help: the trait `fixture_semconv::events::session::start::web::Required_session_id` is not implemented for `Unset`
+  = note: add `session.id: <value>` to the `event!` attributes
+help: the trait `fixture_semconv::events::session::start::web::Required_session_id` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::events::session::start::web::Builder::<P0, P1, C>::emit`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, C>::emit`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `user.id` on event `session.start.web`
+ --> tests/ui/fail_event_refinement.rs:4:12
+  |
+4 |     event!(session.start.web {});
+  |            ^^^^^^^ `user.id` is required here
+  |
+  = help: the trait `Required_user_id` is not implemented for `Unset`
+  = note: add `user.id: <value>` to the `event!` attributes
+help: the trait `Required_user_id` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::events::session::start::web::Builder::<P0, P1, C>::emit`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, C>::emit`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

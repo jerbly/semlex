@@ -1,0 +1,22 @@
+error[E0277]: `url_scheme` is not an attribute of metric `shop.cart.items_sold`
+ --> tests/compile_errors/02_not_on_this_signal.rs:8:9
+  |
+8 |         url.scheme: "https",
+  |         ---^^^^^^^
+  |         |
+  |         not an attribute of this metric
+  |         required by a bound introduced by this call
+  |
+  = help: the trait `showcase::metrics::shop::cart::items_sold::With<url_scheme>` is not implemented for `showcase::metrics::shop::cart::items_sold::Builder<Set, Set>`
+  = note: metric `shop.cart.items_sold` defines: `shop.payment.method`, `shop.tenant.code`. Use one of those, or add this attribute to the metric in the registry (attribute types are named after their keys with `.` as `_`)
+note: required by a bound in `showcase::metrics::shop::cart::items_sold::Builder::<P0, P1>::with`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1>::with`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

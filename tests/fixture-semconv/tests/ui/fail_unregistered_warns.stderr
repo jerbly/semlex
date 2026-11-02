@@ -1,0 +1,11 @@
+error: use of deprecated function `main::__semlex_unregistered`: `demo.retry.attempt` is not in the semantic-convention registry; add it to the registry
+ --> tests/ui/fail_unregistered_warns.rs:5:33
+  |
+5 |     let _ = attrs![unregistered("demo.retry.attempt"): 2];
+  |                                 ^^^^^^^^^^^^^^^^^^^^
+  |
+note: the lint level is defined here
+ --> tests/ui/fail_unregistered_warns.rs:1:9
+  |
+1 | #![deny(deprecated)]
+  |         ^^^^^^^^^^

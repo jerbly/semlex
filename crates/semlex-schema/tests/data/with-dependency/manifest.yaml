@@ -1,0 +1,7 @@
+file_format: manifest/2.0
+schema_url: https://semlex.example/schemas/app/1.0.0
+description: An application registry that refers to its dependency's attributes.
+dependencies:
+- schema_url: https://semlex.example/schemas/dep/1.0.0
+stability: development
+resolved_registry_uri: https://semlex.example/schemas/app/1.0.0/resolved.yaml

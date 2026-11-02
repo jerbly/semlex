@@ -1,0 +1,51 @@
+---
+source: examples/advanced/slo-macros/src/lib.rs
+expression: "&text[start..end]"
+---
+/// Items from annotation hooks under `slo`.
+#[allow(dead_code, unused_imports)]
+pub(crate) mod slo {
+    /// Items from annotation hooks under `slo.http`.
+    pub mod http {
+        /// Items from annotation hooks under `slo.http.server`.
+        pub mod server {
+            /// Items from annotation hooks under `slo.http.server.request`.
+            pub mod request {
+                /// Items from annotation hooks under `slo.http.server.request.duration`.
+                pub mod duration {
+                    /// SLO for `http.server.request.duration`: 99% within 500 ms.
+                    pub const METRIC: &str = "http.server.request.duration";
+                    /// Fraction of measurements that must be within [`LATENCY`].
+                    pub const OBJECTIVE: f64 = 0.99f64;
+                    /// The latency threshold.
+                    pub const LATENCY: ::std::time::Duration = ::std::time::Duration::from_millis(
+                        500u64,
+                    );
+                    /// Whether a measurement meets the latency threshold.
+                    pub fn within(elapsed: ::std::time::Duration) -> bool {
+                        elapsed <= LATENCY
+                    }
+                    /// The metric's generated module.
+                    pub use crate::metrics::http::server::request::duration as metric;
+                    /// Items from annotation hooks under `slo.http.server.request.duration.api`.
+                    pub mod api {
+                        /// SLO for `http.server.request.duration.api`: 99% within 500 ms.
+                        pub const METRIC: &str = "http.server.request.duration";
+                        /// Fraction of measurements that must be within [`LATENCY`].
+                        pub const OBJECTIVE: f64 = 0.99f64;
+                        /// The latency threshold.
+                        pub const LATENCY: ::std::time::Duration = ::std::time::Duration::from_millis(
+                            500u64,
+                        );
+                        /// Whether a measurement meets the latency threshold.
+                        pub fn within(elapsed: ::std::time::Duration) -> bool {
+                            elapsed <= LATENCY
+                        }
+                        /// The metric's generated module.
+                        pub use crate::metrics::http::server::request::duration::api as metric;
+                    }
+                }
+            }
+        }
+    }
+}

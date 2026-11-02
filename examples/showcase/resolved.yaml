@@ -1,0 +1,1005 @@
+file_format: resolved/2.0
+schema_url: https://semlex.example/schemas/showcase/1.0.0
+attribute_catalog:
+- key: db.namespace
+  type: string
+  examples:
+  - customers
+  - test.users
+  brief: |
+    The name of the database, fully qualified within the server address and port.
+  note: |
+    If a database system has multiple namespace components, they SHOULD be concatenated from the most general to the most specific namespace component, using `|` as a separator between the components. Any missing components (and their associated separators) SHOULD be omitted.
+    Semantic conventions for individual database systems SHOULD document what `db.namespace` means in the context of that system.
+    It is RECOMMENDED to capture the value as provided by the application without attempting to do any case normalization.
+  stability: stable
+  provenance:
+    source: 0
+- key: db.operation.name
+  type: string
+  examples:
+  - findAndModify
+  - HMSET
+  - SELECT
+  brief: |
+    The name of the operation or command being executed.
+  note: |
+    It is RECOMMENDED to capture the value as provided by the application
+    without attempting to do any case normalization.
+
+    The operation name SHOULD NOT be extracted from `db.query.text`,
+    when the database system supports query text with multiple operations
+    in non-batch operations.
+
+    If spaces can occur in the operation name, multiple consecutive spaces
+    SHOULD be normalized to a single space.
+
+    For batch operations, if the individual operations are known to have the same operation name
+    then that operation name SHOULD be used prepended by `BATCH `,
+    otherwise `db.operation.name` SHOULD be `BATCH` or some other database
+    system specific term if more applicable.
+  stability: stable
+  provenance:
+    source: 0
+- key: db.system.name
+  type:
+    members:
+    - id: other_sql
+      value: other_sql
+      brief: Some other SQL database. Fallback only.
+      stability: development
+    - id: softwareag.adabas
+      value: softwareag.adabas
+      brief: '[Adabas (Adaptable Database System)](https://documentation.softwareag.com/?pf=adabas)'
+      stability: development
+    - id: actian.ingres
+      value: actian.ingres
+      brief: '[Actian Ingres](https://www.actian.com/databases/ingres/)'
+      stability: development
+    - id: aws.dynamodb
+      value: aws.dynamodb
+      brief: '[Amazon DynamoDB](https://aws.amazon.com/pm/dynamodb/)'
+      stability: development
+    - id: aws.redshift
+      value: aws.redshift
+      brief: '[Amazon Redshift](https://aws.amazon.com/redshift/)'
+      stability: development
+    - id: azure.cosmosdb
+      value: azure.cosmosdb
+      brief: '[Azure Cosmos DB](https://learn.microsoft.com/azure/cosmos-db)'
+      stability: development
+    - id: intersystems.cache
+      value: intersystems.cache
+      brief: '[InterSystems Caché](https://www.intersystems.com/products/cache/)'
+      stability: development
+    - id: cassandra
+      value: cassandra
+      brief: '[Apache Cassandra](https://cassandra.apache.org/)'
+      stability: development
+    - id: clickhouse
+      value: clickhouse
+      brief: '[ClickHouse](https://clickhouse.com/)'
+      stability: development
+    - id: cockroachdb
+      value: cockroachdb
+      brief: '[CockroachDB](https://www.cockroachlabs.com/)'
+      stability: development
+    - id: couchbase
+      value: couchbase
+      brief: '[Couchbase](https://www.couchbase.com/)'
+      stability: development
+    - id: couchdb
+      value: couchdb
+      brief: '[Apache CouchDB](https://couchdb.apache.org/)'
+      stability: development
+    - id: derby
+      value: derby
+      brief: '[Apache Derby](https://db.apache.org/derby/)'
+      stability: development
+    - id: elasticsearch
+      value: elasticsearch
+      brief: '[Elasticsearch](https://www.elastic.co/elasticsearch)'
+      stability: development
+    - id: firebirdsql
+      value: firebirdsql
+      brief: '[Firebird](https://www.firebirdsql.org/)'
+      stability: development
+    - id: gcp.spanner
+      value: gcp.spanner
+      brief: '[Google Cloud Spanner](https://cloud.google.com/spanner)'
+      stability: development
+    - id: geode
+      value: geode
+      brief: '[Apache Geode](https://geode.apache.org/)'
+      stability: development
+    - id: h2database
+      value: h2database
+      brief: '[H2 Database](https://h2database.com/)'
+      stability: development
+    - id: hbase
+      value: hbase
+      brief: '[Apache HBase](https://hbase.apache.org/)'
+      stability: development
+    - id: hive
+      value: hive
+      brief: '[Apache Hive](https://hive.apache.org/)'
+      stability: development
+    - id: hsqldb
+      value: hsqldb
+      brief: '[HyperSQL Database](https://hsqldb.org/)'
+      stability: development
+    - id: ibm.db2
+      value: ibm.db2
+      brief: '[IBM Db2](https://www.ibm.com/db2)'
+      stability: development
+    - id: ibm.informix
+      value: ibm.informix
+      brief: '[IBM Informix](https://www.ibm.com/products/informix)'
+      stability: development
+    - id: ibm.netezza
+      value: ibm.netezza
+      brief: '[IBM Netezza](https://www.ibm.com/products/netezza)'
+      stability: development
+    - id: influxdb
+      value: influxdb
+      brief: '[InfluxDB](https://www.influxdata.com/)'
+      stability: development
+    - id: instantdb
+      value: instantdb
+      brief: '[Instant](https://www.instantdb.com/)'
+      stability: development
+    - id: mariadb
+      value: mariadb
+      brief: '[MariaDB](https://mariadb.org/)'
+      stability: stable
+    - id: memcached
+      value: memcached
+      brief: '[Memcached](https://memcached.org/)'
+      stability: development
+    - id: mongodb
+      value: mongodb
+      brief: '[MongoDB](https://www.mongodb.com/)'
+      stability: development
+    - id: microsoft.sql_server
+      value: microsoft.sql_server
+      brief: '[Microsoft SQL Server](https://www.microsoft.com/sql-server)'
+      stability: stable
+    - id: mysql
+      value: mysql
+      brief: '[MySQL](https://www.mysql.com/)'
+      stability: stable
+    - id: neo4j
+      value: neo4j
+      brief: '[Neo4j](https://neo4j.com/)'
+      stability: development
+    - id: opensearch
+      value: opensearch
+      brief: '[OpenSearch](https://opensearch.org/)'
+      stability: development
+    - id: oracle.db
+      value: oracle.db
+      brief: '[Oracle Database](https://www.oracle.com/database/)'
+      stability: development
+    - id: postgresql
+      value: postgresql
+      brief: '[PostgreSQL](https://www.postgresql.org/)'
+      stability: stable
+    - id: redis
+      value: redis
+      brief: '[Redis](https://redis.io/)'
+      stability: development
+    - id: sap.hana
+      value: sap.hana
+      brief: '[SAP HANA](https://www.sap.com/products/technology-platform/hana/what-is-sap-hana.html)'
+      stability: development
+    - id: sap.maxdb
+      value: sap.maxdb
+      brief: '[SAP MaxDB](https://maxdb.sap.com/)'
+      stability: development
+    - id: sqlite
+      value: sqlite
+      brief: '[SQLite](https://www.sqlite.org/)'
+      stability: development
+    - id: teradata
+      value: teradata
+      brief: '[Teradata](https://www.teradata.com/)'
+      stability: development
+    - id: trino
+      value: trino
+      brief: '[Trino](https://trino.io/)'
+      stability: development
+  brief: The database management system (DBMS) product as identified by the client instrumentation.
+  note: |
+    The actual DBMS may differ from the one identified by the client. For example, when using PostgreSQL client libraries to connect to a CockroachDB, the `db.system.name` is set to `postgresql` based on the instrumentation's best knowledge.
+  stability: stable
+  provenance:
+    source: 0
+- key: error.type
+  type:
+    members:
+    - id: other
+      value: _OTHER
+      brief: |
+        A fallback error value to be used when the instrumentation doesn't define a custom value.
+      stability: stable
+  examples:
+  - timeout
+  - java.net.UnknownHostException
+  - server_certificate_invalid
+  - '500'
+  brief: |
+    Describes a class of error the operation ended with.
+  note: |
+    The `error.type` SHOULD be predictable, and SHOULD have low cardinality.
+
+    When `error.type` is set to a type (e.g., an exception type), its
+    canonical class name identifying the type within the artifact SHOULD be used.
+
+    If the recorded error type is a wrapper that is not meaningful for
+    failure classification, instrumentation MAY use the type of the inner
+    error instead. For example, in Go, errors created with `fmt.Errorf`
+    using `%w` MAY be unwrapped when the wrapper type does not help
+    classify the failure.
+
+    Instrumentations SHOULD document the list of errors they report.
+
+    The cardinality of `error.type` within one instrumentation library SHOULD be low.
+    Telemetry consumers that aggregate data from multiple instrumentation libraries and applications
+    should be prepared for `error.type` to have high cardinality at query time when no
+    additional filters are applied.
+
+    If the operation has completed successfully, instrumentations SHOULD NOT set `error.type`.
+
+    If a specific domain defines its own set of error identifiers (such as HTTP or RPC status codes),
+    it's RECOMMENDED to:
+
+    - Use a domain-specific attribute
+    - Set `error.type` to capture all errors, regardless of whether they are defined within the domain-specific set or not.
+  stability: stable
+  provenance:
+    source: 0
+- key: exception.message
+  type: string
+  examples:
+  - Division by zero
+  - Can't convert 'int' object to str implicitly
+  brief: The exception message.
+  note: |
+    > [!WARNING]
+    >
+    > This attribute may contain sensitive information.
+  stability: stable
+  provenance:
+    source: 0
+- key: exception.type
+  type: string
+  examples:
+  - java.net.ConnectException
+  - OSError
+  brief: |
+    The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
+  note: |
+    If the recorded exception type is a wrapper that is not meaningful for
+    failure classification, instrumentation MAY use the type of the inner
+    exception instead. For example, in Go, errors created with `fmt.Errorf`
+    using `%w` MAY be unwrapped when the wrapper type does not help
+    classify the failure.
+  stability: stable
+  provenance:
+    source: 0
+- key: http.request.header
+  type: template[string[]]
+  examples:
+  - - application/json
+  - - 1.2.3.4
+    - 1.2.3.5
+  brief: |
+    HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
+  note: |
+    Instrumentations SHOULD require an explicit configuration of which headers are to be captured.
+    Including all request headers can be a security risk - explicit configuration helps avoid leaking sensitive information.
+
+    The `User-Agent` header is already captured in the `user_agent.original` attribute.
+    Users MAY explicitly configure instrumentations to capture them even though it is not recommended.
+
+    The attribute value MUST consist of either multiple header values as an array of strings
+    or a single-item array containing a possibly comma-concatenated string, depending on the way
+    the HTTP library provides access to headers.
+
+    Examples:
+
+    - A header `Content-Type: application/json` SHOULD be recorded as the `http.request.header.content-type`
+      attribute with value `["application/json"]`.
+    - A header `X-Forwarded-For: 1.2.3.4, 1.2.3.5` SHOULD be recorded as the `http.request.header.x-forwarded-for`
+      attribute with value `["1.2.3.4", "1.2.3.5"]` or `["1.2.3.4, 1.2.3.5"]` depending on the HTTP library.
+  stability: stable
+  provenance:
+    source: 0
+- key: http.request.method
+  type:
+    members:
+    - id: connect
+      value: CONNECT
+      brief: CONNECT method.
+      stability: stable
+    - id: delete
+      value: DELETE
+      brief: DELETE method.
+      stability: stable
+    - id: get
+      value: GET
+      brief: GET method.
+      stability: stable
+    - id: head
+      value: HEAD
+      brief: HEAD method.
+      stability: stable
+    - id: options
+      value: OPTIONS
+      brief: OPTIONS method.
+      stability: stable
+    - id: patch
+      value: PATCH
+      brief: PATCH method.
+      stability: stable
+    - id: post
+      value: POST
+      brief: POST method.
+      stability: stable
+    - id: put
+      value: PUT
+      brief: PUT method.
+      stability: stable
+    - id: trace
+      value: TRACE
+      brief: TRACE method.
+      stability: stable
+    - id: query
+      value: QUERY
+      brief: QUERY method.
+      stability: development
+    - id: other
+      value: _OTHER
+      brief: Any HTTP method that the instrumentation has no prior knowledge of.
+      stability: stable
+  examples:
+  - GET
+  - POST
+  - HEAD
+  brief: HTTP request method.
+  note: |
+    HTTP request method value SHOULD be "known" to the instrumentation.
+    By default, this convention defines "known" methods as the ones listed in [RFC9110](https://www.rfc-editor.org/rfc/rfc9110.html#name-methods),
+    the PATCH method defined in [RFC5789](https://www.rfc-editor.org/rfc/rfc5789.html)
+    and the QUERY method defined in [httpbis-safe-method-w-body](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/?include_text=1).
+
+    If the HTTP request method is not known to instrumentation, it MUST set the `http.request.method` attribute to `_OTHER`.
+
+    If the HTTP instrumentation could end up converting valid HTTP request methods to `_OTHER`, then it MUST provide a way to override
+    the list of known HTTP methods. If this override is done via environment variable, then the environment variable MUST be named
+    OTEL_INSTRUMENTATION_HTTP_KNOWN_METHODS and support a comma-separated list of case-sensitive known HTTP methods.
+
+    ![Development](https://img.shields.io/badge/-development-blue)
+    If this override is done via declarative configuration, then the list MUST be configurable via the `known_methods` property
+    (an array of case-sensitive strings with minimum items 0) under `.instrumentation/development.general.http.client` and/or
+    `.instrumentation/development.general.http.server`.
+
+    In either case, this list MUST be a full override of the default known methods,
+    it is not a list of known methods in addition to the defaults.
+
+    HTTP method names are case-sensitive and `http.request.method` attribute value MUST match a known HTTP method name exactly.
+    Instrumentations for specific web frameworks that consider HTTP methods to be case insensitive, SHOULD populate a canonical equivalent.
+    Tracing instrumentations that do so, MUST also set `http.request.method_original` to the original value.
+  stability: stable
+  provenance:
+    source: 0
+- key: http.response.status_code
+  type: int
+  examples:
+  - 200
+  brief: '[HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).'
+  stability: stable
+  provenance:
+    source: 0
+- key: http.route
+  type: string
+  examples:
+  - /users/:userID?
+  - my-controller/my-action/{id?}
+  brief: |
+    The matched route template for the request. This MUST be low-cardinality and include all static path segments, with dynamic path segments represented with placeholders.
+  note: |
+    MUST NOT be populated when this is not supported by the HTTP server framework as the route attribute should have low-cardinality and the URI path can NOT substitute it.
+    SHOULD include the [application root](/docs/http/http-spans.md#http-server-definitions) if there is one.
+
+    A static path segment is a part of the route template with a fixed, low-cardinality value. This includes literal strings like `/users/` and placeholders that
+    are constrained to a finite, predefined set of values, e.g. `{controller}` or `{action}`.
+
+    A dynamic path segment is a placeholder for a value that can have high cardinality and is not constrained to a predefined list like static path segments.
+
+    Instrumentations SHOULD use routing information provided by the corresponding web framework. They SHOULD pick the most precise source of routing information and MAY
+    support custom route formatting. Instrumentations SHOULD document the format and the API used to obtain the route string.
+  stability: stable
+  provenance:
+    source: 0
+- key: service.instance.id
+  type: string
+  examples:
+  - 627cc493-f310-47de-96bd-71410b7dec09
+  brief: |
+    The string ID of the service instance.
+  note: |
+    MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words
+    `service.namespace,service.name,service.instance.id` triplet MUST be globally unique). The ID helps to
+    distinguish instances of the same service that exist at the same time (e.g. instances of a horizontally scaled
+    service).
+
+    Implementations, such as SDKs, are recommended to generate a random Version 1 or Version 4 [RFC
+    4122](https://www.ietf.org/rfc/rfc4122.txt) UUID, but are free to use an inherent unique ID as the source of
+    this value if stability is desirable. In that case, the ID SHOULD be used as source of a UUID Version 5 and
+    SHOULD use the following UUID as the namespace: `4d63009a-8d0f-11ee-aad7-4c796ed8e320`.
+
+    UUIDs are typically recommended, as only an opaque value for the purposes of identifying a service instance is
+    needed. Similar to what can be seen in the man page for the
+    [`/etc/machine-id`](https://www.freedesktop.org/software/systemd/man/latest/machine-id.html) file, the underlying
+    data, such as pod name and namespace should be treated as confidential, being the user's choice to expose it
+    or not via another resource attribute.
+
+    For applications running behind an application server (like unicorn), we do not recommend using one identifier
+    for all processes participating in the application. Instead, it's recommended each division (e.g. a worker
+    thread in unicorn) to have its own instance.id.
+
+    It's not recommended for a Collector to set `service.instance.id` if it can't unambiguously determine the
+    service instance that is generating that telemetry. For instance, creating an UUID based on `pod.name` will
+    likely be wrong, as the Collector might not know from which container within that pod the telemetry originated.
+    However, Collectors can set the `service.instance.id` if they can unambiguously determine the service instance
+    for that telemetry. This is typically the case for scraping receivers, as they know the target address and
+    port.
+  stability: stable
+  provenance:
+    source: 0
+- key: service.name
+  type: string
+  examples:
+  - shoppingcart
+  brief: |
+    Logical name of the service.
+  note: |
+    MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with the process executable name, e.g. `unknown_service:bash`. If the process executable name is not available, the value MUST be set to `unknown_service`.
+    The process executable name is the name of the process executable, the same value as described by the [`process.executable.name`](process.md) resource attribute.
+  stability: stable
+  provenance:
+    source: 0
+- key: service.version
+  type: string
+  examples:
+  - 2.0.0
+  - a01dbef8a
+  brief: |
+    The version string of the service component. The format is not defined by these conventions.
+  stability: stable
+  provenance:
+    source: 0
+- key: shop.cart.item_count
+  type: int
+  examples:
+  - 3
+  brief: Number of items in the cart.
+  stability: stable
+- key: shop.cart.size
+  type: int
+  brief: Number of items in the cart.
+  stability: stable
+  deprecated:
+    reason: renamed
+    renamed_to: shop.cart.item_count
+    note: Replaced by `shop.cart.item_count`.
+- key: shop.cart.skus
+  type: string[]
+  examples:
+  - - SKU-1
+    - SKU-2
+  brief: Stock-keeping units of the items in the cart.
+  stability: stable
+- key: shop.customer.email
+  type: string
+  brief: The customer's email address.
+  stability: stable
+  annotations:
+    sensitivity: pii
+- key: shop.customer.id
+  type: string
+  brief: The customer's account id.
+  stability: stable
+  annotations:
+    cardinality: unbounded
+    sensitivity: pii
+- key: shop.inventory.fill_ratio_tier
+  type: string
+  examples:
+  - fast
+  - bulk
+  brief: Warehouse tier the fill ratio is for.
+  stability: stable
+- key: shop.order.id
+  type: string
+  brief: Identifier of the placed order.
+  stability: stable
+  annotations:
+    cardinality: unbounded
+- key: shop.payment.method
+  type:
+    members:
+    - id: card
+      value: card
+      brief: Credit or debit card.
+      stability: stable
+    - id: wallet
+      value: wallet
+      brief: A digital wallet.
+      stability: stable
+    - id: invoice
+      value: invoice
+      brief: Pay later by invoice.
+      stability: stable
+    - id: crypto
+      value: crypto
+      brief: Cryptocurrency (pilot).
+      stability: development
+  brief: How the customer pays.
+  stability: stable
+  annotations:
+    code_generation:
+      rust:
+        enum_name: PaymentMethod
+- key: shop.payment.timeout
+  type: double
+  brief: Timeout for the payment provider, in seconds.
+  stability: stable
+  annotations:
+    code_generation:
+      rust:
+        type: std::time::Duration
+- key: shop.tenant.code
+  type: string
+  examples:
+  - ACME
+  brief: Short code of the tenant (store) the request is for.
+  stability: stable
+  annotations:
+    shop:
+      case: upper
+- key: url.path
+  type: string
+  examples:
+  - /search
+  brief: |
+    The [URI path](https://www.rfc-editor.org/rfc/rfc3986#section-3.3) component
+  note: |
+    Sensitive content provided in `url.path` SHOULD be scrubbed when instrumentations can identify it.
+  stability: stable
+  annotations:
+    cardinality: unbounded
+  provenance:
+    source: 0
+- key: url.scheme
+  type: string
+  examples:
+  - https
+  - ftp
+  - telnet
+  brief: |
+    The [URI scheme](https://www.rfc-editor.org/rfc/rfc3986#section-3.1) component identifying the used protocol.
+  stability: stable
+  provenance:
+    source: 0
+registry:
+  attributes:
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  attribute_groups:
+  - id: exception
+    attributes:
+    - base: 4
+      requirement_level: required
+    - base: 5
+      requirement_level: required
+    brief: Attributes describing an exception.
+    stability: stable
+  spans:
+  - type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or a query summary.'
+    attributes:
+    - base: 0
+      requirement_level: required
+    - base: 1
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 2
+      requirement_level: required
+      sampling_relevant: true
+    requirement_level: recommended
+    brief: A database call.
+    stability: stable
+  - type: http.server.request
+    kind: server
+    name:
+      templates:
+      - pattern: '{http.request.method} {http.route}'
+        attributes:
+        - http.request.method
+        - http.route
+        parts:
+        - type: attribute
+          attribute: http.request.method
+        - type: literal
+          value: ' '
+        - type: attribute
+          attribute: http.route
+      - pattern: '{http.request.method}'
+        attributes:
+        - http.request.method
+        parts:
+        - type: attribute
+          attribute: http.request.method
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If the request ended with an error.
+    - base: 6
+      requirement_level: opt_in
+    - base: 7
+      requirement_level: required
+      sampling_relevant: true
+    - base: 8
+      requirement_level:
+        conditionally_required: If a response was sent.
+    - base: 9
+      requirement_level:
+        conditionally_required: If the request matched a route.
+    - base: 17
+      requirement_level:
+        recommended: When the customer is signed in.
+    - base: 22
+      requirement_level: required
+    - base: 23
+      requirement_level: required
+    - base: 24
+      requirement_level: required
+      sampling_relevant: true
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: An HTTP request handled by the shop.
+    stability: stable
+  - type: shop.payment.authorize
+    kind: client
+    name:
+      templates:
+      - pattern: authorize {shop.payment.method}
+        attributes:
+        - shop.payment.method
+        parts:
+        - type: literal
+          value: 'authorize '
+        - type: attribute
+          attribute: shop.payment.method
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If authorization failed.
+    - base: 16
+      requirement_level:
+        recommended: For fraud checks.
+    - base: 20
+      requirement_level: required
+      sampling_relevant: true
+    - base: 21
+      requirement_level: required
+    requirement_level: recommended
+    brief: Authorizing a payment with the payment provider.
+    stability: stable
+  metrics:
+  - name: http.server.request.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If the request ended with an error.
+    - base: 7
+      requirement_level: required
+    - base: 8
+      requirement_level:
+        conditionally_required: If a response was sent.
+    - base: 9
+      requirement_level: required
+    - base: 24
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Duration of HTTP requests handled by the shop.
+    stability: stable
+  - name: shop.cart.items_sold
+    instrument: counter
+    unit: '{item}'
+    attributes:
+    - base: 20
+      requirement_level: required
+    - base: 22
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of items sold.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - name: shop.checkout.active
+    instrument: updowncounter
+    unit: '{checkout}'
+    attributes:
+    - base: 22
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of checkouts in progress.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - name: shop.inventory.fill_ratio
+    instrument: gauge
+    unit: '1'
+    attributes:
+    - base: 18
+      requirement_level: required
+    requirement_level: opt_in
+    brief: Fraction of warehouse capacity in use.
+    stability: stable
+  events:
+  - name: shop.order.placed
+    attributes:
+    - base: 13
+      requirement_level: required
+    - base: 15
+      requirement_level: recommended
+    - base: 19
+      requirement_level: required
+    - base: 20
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: A customer placed an order.
+    stability: stable
+  entities:
+  - type: service
+    identity:
+    - 10
+    - 11
+    description:
+    - base: 12
+      requirement_level: required
+    requirement_level: recommended
+    brief: A service instance.
+    stability: stable
+refinements:
+  spans:
+  - id: db.client
+    type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or a query summary.'
+    attributes:
+    - base: 0
+      requirement_level: required
+    - base: 1
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 2
+      requirement_level: required
+      sampling_relevant: true
+    requirement_level: recommended
+    brief: A database call.
+    stability: stable
+  - id: http.server.request
+    type: http.server.request
+    kind: server
+    name:
+      templates:
+      - pattern: '{http.request.method} {http.route}'
+        attributes:
+        - http.request.method
+        - http.route
+        parts:
+        - type: attribute
+          attribute: http.request.method
+        - type: literal
+          value: ' '
+        - type: attribute
+          attribute: http.route
+      - pattern: '{http.request.method}'
+        attributes:
+        - http.request.method
+        parts:
+        - type: attribute
+          attribute: http.request.method
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If the request ended with an error.
+    - base: 6
+      requirement_level: opt_in
+    - base: 7
+      requirement_level: required
+      sampling_relevant: true
+    - base: 8
+      requirement_level:
+        conditionally_required: If a response was sent.
+    - base: 9
+      requirement_level:
+        conditionally_required: If the request matched a route.
+    - base: 17
+      requirement_level:
+        recommended: When the customer is signed in.
+    - base: 22
+      requirement_level: required
+    - base: 23
+      requirement_level: required
+    - base: 24
+      requirement_level: required
+      sampling_relevant: true
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: An HTTP request handled by the shop.
+    stability: stable
+  - id: shop.orders.insert
+    type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or a query summary.'
+    attributes:
+    - base: 0
+      requirement_level: required
+    - base: 1
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 2
+      requirement_level: required
+      sampling_relevant: true
+    - base: 19
+      requirement_level: required
+    requirement_level: recommended
+    brief: Inserting an order.
+    stability: stable
+  - id: shop.payment.authorize
+    type: shop.payment.authorize
+    kind: client
+    name:
+      templates:
+      - pattern: authorize {shop.payment.method}
+        attributes:
+        - shop.payment.method
+        parts:
+        - type: literal
+          value: 'authorize '
+        - type: attribute
+          attribute: shop.payment.method
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If authorization failed.
+    - base: 16
+      requirement_level:
+        recommended: For fraud checks.
+    - base: 20
+      requirement_level: required
+      sampling_relevant: true
+    - base: 21
+      requirement_level: required
+    requirement_level: recommended
+    brief: Authorizing a payment with the payment provider.
+    stability: stable
+  metrics:
+  - id: http.server.request.duration
+    name: http.server.request.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 3
+      requirement_level:
+        conditionally_required: If the request ended with an error.
+    - base: 7
+      requirement_level: required
+    - base: 8
+      requirement_level:
+        conditionally_required: If a response was sent.
+    - base: 9
+      requirement_level: required
+    - base: 24
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Duration of HTTP requests handled by the shop.
+    stability: stable
+  - id: shop.cart.items_sold
+    name: shop.cart.items_sold
+    instrument: counter
+    unit: '{item}'
+    attributes:
+    - base: 20
+      requirement_level: required
+    - base: 22
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of items sold.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - id: shop.checkout.active
+    name: shop.checkout.active
+    instrument: updowncounter
+    unit: '{checkout}'
+    attributes:
+    - base: 22
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of checkouts in progress.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - id: shop.inventory.fill_ratio
+    name: shop.inventory.fill_ratio
+    instrument: gauge
+    unit: '1'
+    attributes:
+    - base: 18
+      requirement_level: required
+    requirement_level: opt_in
+    brief: Fraction of warehouse capacity in use.
+    stability: stable
+  events:
+  - id: shop.order.placed
+    name: shop.order.placed
+    attributes:
+    - base: 13
+      requirement_level: required
+    - base: 15
+      requirement_level: recommended
+    - base: 19
+      requirement_level: required
+    - base: 20
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: A customer placed an order.
+    stability: stable
+  entities:
+  - id: service
+    type: service
+    identity:
+    - 10
+    - 11
+    description:
+    - base: 12
+      requirement_level: required
+    requirement_level: recommended
+    brief: A service instance.
+    stability: stable
+dependencies:
+- https://opentelemetry.io/schemas/1.44.0

@@ -1,0 +1,11 @@
+error: use of deprecated constant `fixture_semconv::attr::http::method`: renamed to `http.request.method`
+ --> tests/ui/fail_deprecated_attribute.rs:5:25
+  |
+5 |     let _ = attrs![http.method: "GET"];
+  |                         ^^^^^^
+  |
+note: the lint level is defined here
+ --> tests/ui/fail_deprecated_attribute.rs:1:9
+  |
+1 | #![deny(deprecated)]
+  |         ^^^^^^^^^^

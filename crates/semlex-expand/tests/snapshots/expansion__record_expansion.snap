@@ -1,0 +1,41 @@
+---
+source: crates/semlex-expand/tests/expansion.rs
+expression: "pretty(quote!(fn f() { let span = #out; #current; }))"
+---
+fn f() {
+    let span = {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        let __semlex_b = span;
+        const _: () = {
+            __semlex_attr::http::response::status_code.check_usable();
+            __semlex_attr::http::response::status_code.check_literal(200i64);
+        };
+        let __semlex_b = __semlex_b
+            .with(
+                __semlex_attr::http::response::status_code,
+                __semlex_attr::http::response::status_code.literal(200i64),
+            );
+        __semlex_b
+    };
+    {
+        #[allow(unused_imports)]
+        use ::org::attr as __semlex_attr;
+        #[allow(unused_imports)]
+        use ::org::__semlex::__private as __semlex_rt;
+        #[allow(unused_imports)]
+        use ::org::__semlex_registry as __semlex_reg;
+        __semlex_rt::record_current([
+            {
+                const _: () = {
+                    __semlex_attr::http::route.check_usable();
+                };
+                __semlex_rt::kv(__semlex_attr::http::route, route)
+            },
+        ])
+    };
+}

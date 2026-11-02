@@ -1,0 +1,49 @@
+error[E0277]: `std::string::String` is not a valid value here: this attribute takes a `Pii<StringValue>`
+ --> tests/compile_errors/08_pii_not_wrapped.rs:9:51
+  |
+9 |     let span = record!(span, shop.customer.email: email);
+  |                              ----                 ^^^^^ expected a `Pii<StringValue>`
+  |                              |
+  |                              required by a bound introduced by this call
+  |
+  = help: the trait `IntoValue<Pii<StringValue>>` is not implemented for `std::string::String`
+  = note: `StringValue`: `&str`, `&String`, `String`, `Cow<'static, str>`, `Arc<str>` | `IntValue`: any integer up to 64 bits (`u64`/`usize` saturate at `i64::MAX`) | `DoubleValue`: `f64`, `f32` | `BoolValue`: `bool` | arrays: `Vec<…>` of those | enums: the enum, a string literal, or `custom(…)` | `Pii<…>` (`sensitivity: pii`): wrap the value in `redacted(…)` or `hashed(…)` | `Typed<K, T>` (`code_generation.rust.type`): pass a `T`
+help: the following other types implement trait `IntoValue<K>`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |  ^
+  | |  |
+  | |__`&std::string::String` implements `IntoValue<ErrorType>`
+  |    `std::string::String` implements `IntoValue<ErrorType>`
+  |
+ ::: $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |           $(impl IntoValue<kind::$kind> for $t {
+  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `std::string::String` implements `IntoValue<StringValue>`
+...
+  |   impl IntoValue<kind::StringValue> for &String {
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&std::string::String` implements `IntoValue<StringValue>`
+...
+  | / into_value!(StringValue:
+  | |     String => |v| Value::from(v),
+  | |     Cow<'static, str> => |v| Value::from(v),
+  | |     Arc<str> => |v| Value::from(v),
+  | | );
+  | |_- in this macro invocation
+note: required by a bound in `showcase::spans::shop::payment::authorize::Builder::<P0, P1, showcase::spans::shop::payment::authorize::Started>::with`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, Started>::with`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

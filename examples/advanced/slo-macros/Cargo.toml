@@ -1,0 +1,24 @@
+[package]
+name = "slo-macros"
+description = "The advanced example's custom registry! macro: a semlex-expand annotation hook for structured per-metric SLOs."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+semlex-expand.workspace = true
+proc-macro2 = "1.0"
+quote = "1.0"
+
+[dev-dependencies]
+insta = "1.49"
+prettyplease = "0.3"
+syn = { version = "3.0", features = ["full"] }
+
+[lints]
+workspace = true

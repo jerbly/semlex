@@ -1,0 +1,95 @@
+error[E0277]: missing required attribute `service.instance.id` on entity `service`
+ --> tests/ui/fail_entity_missing_identity.rs:4:21
+  |
+4 |     let _ = entity!(service { service.name: "fixture-service" });
+  |                     ^^^^^^^ `service.instance.id` is required here
+  |
+  = help: the trait `Required_service_instance_id` is not implemented for `Unset`
+  = note: add `service.instance.id: <value>` to `entity!`
+help: the trait `Required_service_instance_id` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::entities::service::Builder::<P0, P1, P2, P3>::build`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3>::build`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `service.namespace` on entity `service`
+ --> tests/ui/fail_entity_missing_identity.rs:4:21
+  |
+4 |     let _ = entity!(service { service.name: "fixture-service" });
+  |                     ^^^^^^^ `service.namespace` is required here
+  |
+  = help: the trait `Required_service_namespace` is not implemented for `Unset`
+  = note: add `service.namespace: <value>` to `entity!`
+help: the trait `Required_service_namespace` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::entities::service::Builder::<P0, P1, P2, P3>::build`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3>::build`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `service.version` on entity `service`
+ --> tests/ui/fail_entity_missing_identity.rs:4:21
+  |
+4 |     let _ = entity!(service { service.name: "fixture-service" });
+  |                     ^^^^^^^ `service.version` is required here
+  |
+  = help: the trait `Required_service_version` is not implemented for `Unset`
+  = note: add `service.version: <value>` to `entity!`
+help: the trait `Required_service_version` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::entities::service::Builder::<P0, P1, P2, P3>::build`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3>::build`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

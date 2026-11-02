@@ -1,0 +1,21 @@
+error[E0080]: evaluation panicked: value "crypto" of `shop.payment.method` is development; enable the `semlex-unstable` feature of `showcase` to use non-stable items
+ --> tests/compile_errors/11_not_stable_yet.rs:7:9
+  |
+7 |         shop.payment.method: "crypto",
+  |         ^^^^ evaluation of `main::_` failed inside this call
+  |
+note: inside `shop_payment_method::check_literal`
+ --> $RUST/core/src/panic.rs
+  |
+  |           $crate::panicking::panic_display(&$arg);
+  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+  |
+ ::: src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__- in this macro invocation

@@ -1,0 +1,81 @@
+---
+source: crates/semlex-schema/tests/registries.rs
+assertion_line: 104
+expression: render(&fixture_registry())
+---
+span db.client kind=Client name=<note> level=Recommended stability=ReleaseCandidate
+    db.namespace required brief="The name of the database."
+    db.operation recommended brief="Deprecated, use `db.operation.name` instead."
+    db.operation.name conditionally_required(If readily available.) brief="The name of the operation being executed."
+    db.system.name required sampling_relevant brief="The database management system."
+span demo.cache.lookup kind=Internal name=cache lookup level=OptIn stability=Development
+    demo.cache.hit required brief="Cache outcome."
+    demo.tier recommended annotations={"code_generation": Object {"rust": Object {"enum_name": String("ServiceTier")}}} brief="Service tier."
+span demo.legacy.request kind=Server name=legacy request level=Recommended stability=Development deprecated
+    http.request.method recommended brief="HTTP request method."
+span http.server.request kind=Server name={http.request.method} {http.route} | {http.request.method} | HTTP level=Recommended stability=Stable
+    demo.tenant.code required annotations={"demo": Object {"case": String("upper")}} brief="Short code identifying the tenant."
+    http.request.header opt_in brief="HTTP request headers, `<key>` being the normalized header name."
+    http.request.method required sampling_relevant brief="HTTP request method."
+    http.request.resend recommended brief="Whether this is a resend of an earlier request."
+    http.response.status_code conditionally_required(If and only if one was received or sent.) brief="HTTP response status code."
+    http.route conditionally_required(If and only if it's available.) brief="The matched route template."
+    url.path required annotations={"cardinality": String("bounded")} brief="The URI path component."
+    url.scheme required sampling_relevant brief="The URI scheme component."
+    user.id recommended(When the user is authenticated.) annotations={"cardinality": String("bounded"), "sensitivity": String("pii")} brief="Unique identifier of the user."
+span db.hbase.client refines db.client kind=Client name=<note> level=Recommended stability=ReleaseCandidate
+    db.hbase.region required brief="HBase region name."
+    db.namespace required annotations={"cardinality": String("bounded")} brief="The HBase namespace."
+    db.operation recommended brief="Deprecated, use `db.operation.name` instead."
+    db.operation.name conditionally_required(If readily available.) brief="The name of the operation being executed."
+    db.system.name required sampling_relevant brief="The database management system."
+metric demo.cache.fill_ratio name=demo.cache.fill_ratio Gauge unit=1 level=OptIn stability=Development
+    demo.tier required annotations={"code_generation": Object {"rust": Object {"enum_name": String("ServiceTier")}}} brief="Service tier."
+metric demo.internal.counter name=demo.internal.counter Counter unit=1 level=Recommended stability=Development
+metric http.server.active_requests name=http.server.active_requests UpDownCounter unit={request} level=Recommended stability=Development
+    http.request.method recommended brief="HTTP request method."
+    url.scheme recommended brief="The URI scheme component."
+metric http.server.request.count name=http.server.request.count Counter unit={request} level=Recommended stability=Development
+    http.request.method required brief="HTTP request method."
+metric http.server.request.duration name=http.server.request.duration Histogram unit=s level=Recommended stability=Stable
+    http.request.method required brief="HTTP request method."
+    http.response.status_code conditionally_required(If and only if one was received or sent.) brief="HTTP response status code."
+    http.route required brief="The matched route template."
+    url.scheme recommended brief="The URI scheme component."
+metric http.server.request.duration.api refines http.server.request.duration name=http.server.request.duration Histogram unit=s level=Recommended stability=Stable
+    demo.tenant.code required annotations={"demo": Object {"case": String("upper")}} brief="Short code identifying the tenant."
+    http.request.method required brief="HTTP request method."
+    http.response.status_code conditionally_required(If and only if one was received or sent.) brief="HTTP response status code."
+    http.route required brief="The matched route template."
+    url.scheme recommended brief="The URI scheme component."
+event demo.payload.received event_name=Some("demo.payload.received") level=OptIn stability=Development
+    demo.payload required brief="A structured payload. Only valid on log records."
+    user.email recommended annotations={"sensitivity": String("pii")} brief="User email address."
+event session.start event_name=Some("session.start") level=Recommended stability=Development
+    session.id required brief="A unique id to identify a session."
+    session.previous_id conditionally_required(If a previous session existed.) brief="The previous session id."
+event session.start.web refines <unknown> event_name=None level=Recommended stability=Development
+    session.id required brief="A unique id to identify a session."
+    session.previous_id conditionally_required(If a previous session existed.) brief="The previous session id."
+    user.id required annotations={"cardinality": String("unbounded"), "sensitivity": String("pii")} brief="Unique identifier of the user."
+entity container level=Recommended stability=Development
+    container.id required identity brief="Container ID."
+entity host level=Recommended stability=Development
+    host.name required identity brief="Name of the host."
+    host.arch recommended description brief="The CPU architecture of the host."
+entity service level=Recommended stability=Stable
+    service.instance.id required identity brief="The string ID of the service instance."
+    service.name required identity brief="Logical name of the service."
+    service.namespace required identity brief="A namespace for `service.name`."
+    service.version required description brief="The version string of the service."
+entity host.windows refines host level=Recommended stability=Development
+    host.name required identity brief="Name of the host."
+    host.arch recommended description brief="The CPU architecture of the host."
+    host.os.build required description brief="OS build number (Windows hosts)."
+attribute group demo.legacy_db level=Recommended stability=Development deprecated
+    db.connection_string recommended brief="Deprecated, use `server.address` and `server.port`."
+    db.jdbc.driver_classname recommended brief="Removed, no replacement at this time."
+attribute group exception level=Recommended stability=Stable
+    exception.message required brief="The exception message."
+    exception.stacktrace recommended brief="A stacktrace as a string."
+    exception.type required brief="The type of the exception."

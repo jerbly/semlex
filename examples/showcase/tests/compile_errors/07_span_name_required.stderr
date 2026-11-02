@@ -1,0 +1,30 @@
+error[E0277]: span `db.client` has no name template: pass `name: …` to `span!`
+ --> tests/compile_errors/07_span_name_required.rs:5:22
+  |
+5 |     let span = span!(db.client { db.system.name: "postgresql" });
+  |                      ^^ this span needs a name
+  |
+  = help: the trait `showcase::spans::db::client::HasName` is not implemented for `NoName`
+  = note: the registry describes this span's name in prose (`name.note`), so the call site must name it
+  = note: `NoName` implements similarly named trait `showcase::spans::http::server::request::HasName`, but not `showcase::spans::db::client::HasName`
+help: the trait `showcase::spans::db::client::HasName` is implemented for `showcase::semlex::span::Named`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::db::client::Builder::<P0, P1>::start`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1>::start`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

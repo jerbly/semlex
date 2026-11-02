@@ -1,0 +1,11 @@
+error: `reviewed:` takes the reason as a non-empty string literal
+ --> tests/ui/fail_reviewed_misuse.rs:3:74
+  |
+3 |     let _ = fixture_semconv::attrs![unregistered("demo.batch", reviewed: ""): "b-1"];
+  |                                                                          ^^
+
+error: expected `reviewed: "why"` after the key, to approve this use
+ --> tests/ui/fail_reviewed_misuse.rs:4:64
+  |
+4 |     let _ = fixture_semconv::attrs![unregistered("demo.batch", approved: "yes"): "b-1"];
+  |                                                                ^^^^^^^^

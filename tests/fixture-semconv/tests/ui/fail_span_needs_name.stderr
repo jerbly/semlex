@@ -1,0 +1,64 @@
+error[E0277]: missing sampling-relevant attribute `db.system.name` on span `db.client`
+ --> tests/ui/fail_span_needs_name.rs:4:19
+  |
+4 |     let _ = span!(db.client {});
+  |                   ^^ `db.system.name` must be set when the span starts
+  |
+  = help: the trait `fixture_semconv::spans::db::client::AtStart_db_system_name` is not implemented for `Unset`
+  = note: add `db.system.name: <value>` to `span!`; samplers only see attributes given at start
+help: the trait `fixture_semconv::spans::db::client::AtStart_db_system_name` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::spans::db::client::Builder::<P0, P1>::start`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1>::start`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: span `db.client` has no name template: pass `name: …` to `span!`
+ --> tests/ui/fail_span_needs_name.rs:4:19
+  |
+4 |     let _ = span!(db.client {});
+  |                   ^^ this span needs a name
+  |
+  = help: the trait `fixture_semconv::spans::db::client::HasName` is not implemented for `NoName`
+  = note: the registry describes this span's name in prose (`name.note`), so the call site must name it
+  = note: `NoName` implements similarly named trait `fixture_semconv::spans::demo::cache::lookup::HasName`, but not `fixture_semconv::spans::db::client::HasName`
+help: the trait `fixture_semconv::spans::db::client::HasName` is implemented for `fixture_semconv::semlex::span::Named`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `fixture_semconv::spans::db::client::Builder::<P0, P1>::start`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("../../fixtures/resolved/resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `demo.<crate name>`.
+  | |     scope_prefix: "demo.",
+  | |     annotations: {
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1>::start`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

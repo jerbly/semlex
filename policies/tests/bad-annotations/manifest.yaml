@@ -1,0 +1,3 @@
+file_format: definition_manifest/2.0
+schema_url: https://semlex.example/policy-tests/0.1.0
+stability: development

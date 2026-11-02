@@ -1,0 +1,138 @@
+file_format: resolved/2.0
+schema_url: https://semlex.example/schemas/simple/1.0.0
+attribute_catalog:
+- key: error.type
+  type:
+    members:
+    - id: other
+      value: _OTHER
+      brief: |
+        A fallback error value to be used when the instrumentation doesn't define a custom value.
+      stability: stable
+  examples:
+  - timeout
+  - java.net.UnknownHostException
+  - server_certificate_invalid
+  - '500'
+  brief: |
+    Describes a class of error the operation ended with.
+  note: |
+    The `error.type` SHOULD be predictable, and SHOULD have low cardinality.
+
+    When `error.type` is set to a type (e.g., an exception type), its
+    canonical class name identifying the type within the artifact SHOULD be used.
+
+    If the recorded error type is a wrapper that is not meaningful for
+    failure classification, instrumentation MAY use the type of the inner
+    error instead. For example, in Go, errors created with `fmt.Errorf`
+    using `%w` MAY be unwrapped when the wrapper type does not help
+    classify the failure.
+
+    Instrumentations SHOULD document the list of errors they report.
+
+    The cardinality of `error.type` within one instrumentation library SHOULD be low.
+    Telemetry consumers that aggregate data from multiple instrumentation libraries and applications
+    should be prepared for `error.type` to have high cardinality at query time when no
+    additional filters are applied.
+
+    If the operation has completed successfully, instrumentations SHOULD NOT set `error.type`.
+
+    If a specific domain defines its own set of error identifiers (such as HTTP or RPC status codes),
+    it's RECOMMENDED to:
+
+    - Use a domain-specific attribute
+    - Set `error.type` to capture all errors, regardless of whether they are defined within the domain-specific set or not.
+  stability: stable
+  provenance:
+    source: 0
+- key: greeter.name
+  type: string
+  examples:
+  - world
+  brief: Who is greeted.
+  stability: stable
+registry:
+  attributes:
+  - 1
+  attribute_groups: []
+  spans:
+  - type: greeter.greet
+    kind: internal
+    name:
+      templates:
+      - pattern: greet {greeter.name}
+        attributes:
+        - greeter.name
+        parts:
+        - type: literal
+          value: 'greet '
+        - type: attribute
+          attribute: greeter.name
+    attributes:
+    - base: 0
+      requirement_level:
+        conditionally_required: If the greeting failed.
+    - base: 1
+      requirement_level: required
+    requirement_level: recommended
+    brief: Greeting someone.
+    stability: stable
+  metrics:
+  - name: greeter.greetings
+    instrument: counter
+    unit: '{greeting}'
+    attributes:
+    - base: 0
+      requirement_level:
+        conditionally_required: If the greeting failed.
+    requirement_level: recommended
+    brief: Number of greetings.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  events: []
+  entities: []
+refinements:
+  spans:
+  - id: greeter.greet
+    type: greeter.greet
+    kind: internal
+    name:
+      templates:
+      - pattern: greet {greeter.name}
+        attributes:
+        - greeter.name
+        parts:
+        - type: literal
+          value: 'greet '
+        - type: attribute
+          attribute: greeter.name
+    attributes:
+    - base: 0
+      requirement_level:
+        conditionally_required: If the greeting failed.
+    - base: 1
+      requirement_level: required
+    requirement_level: recommended
+    brief: Greeting someone.
+    stability: stable
+  metrics:
+  - id: greeter.greetings
+    name: greeter.greetings
+    instrument: counter
+    unit: '{greeting}'
+    attributes:
+    - base: 0
+      requirement_level:
+        conditionally_required: If the greeting failed.
+    requirement_level: recommended
+    brief: Number of greetings.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: int
+  events: []
+  entities: []
+dependencies:
+- https://opentelemetry.io/schemas/1.44.0

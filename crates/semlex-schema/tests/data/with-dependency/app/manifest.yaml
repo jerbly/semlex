@@ -1,0 +1,8 @@
+file_format: definition_manifest/2.0
+schema_url: https://semlex.example/schemas/app/1.0.0
+description: An application registry that refers to its dependency's attributes.
+stability: development
+dependencies:
+  - name: dep
+    schema_url: https://semlex.example/schemas/dep/1.0.0
+    registry_path: ../dep

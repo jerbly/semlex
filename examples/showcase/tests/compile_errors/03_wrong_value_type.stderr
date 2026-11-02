@@ -1,0 +1,37 @@
+error[E0277]: `&str` is not a valid value here: this attribute takes a `IntValue`
+ --> tests/compile_errors/03_wrong_value_type.rs:7:30
+  |
+7 |     let span = record!(span, http.response.status_code: "201");
+  |                              ----^^^^^^^^^^^^^^^^^^^^^
+  |                              |
+  |                              expected a `IntValue`
+  |                              required by a bound introduced by this call
+  |
+  = help: the trait `IntoValue<IntValue>` is not implemented for `&str`
+  = note: `StringValue`: `&str`, `&String`, `String`, `Cow<'static, str>`, `Arc<str>` | `IntValue`: any integer up to 64 bits (`u64`/`usize` saturate at `i64::MAX`) | `DoubleValue`: `f64`, `f32` | `BoolValue`: `bool` | arrays: `Vec<…>` of those | enums: the enum, a string literal, or `custom(…)` | `Pii<…>` (`sensitivity: pii`): wrap the value in `redacted(…)` or `hashed(…)` | `Typed<K, T>` (`code_generation.rust.type`): pass a `T`
+help: `&str` implements trait `IntoValue<K>`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ `IntoValue<ErrorType>`
+  |
+ ::: $WORKSPACE/crates/semlex/src/lib.rs
+  |
+  |   impl IntoValue<kind::StringValue> for &str {
+  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `IntoValue<StringValue>`
+note: required by a bound in `showcase::spans::http::server::request::Builder::<P0, P1, P2, P3, showcase::spans::http::server::request::Started>::with`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::with`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

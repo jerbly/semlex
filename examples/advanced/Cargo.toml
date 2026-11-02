@@ -1,0 +1,18 @@
+[package]
+name = "advanced"
+description = "A custom registry! macro (slo-macros) with an annotation hook, used by a service over its local registry."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+semlex = { path = "../../crates/semlex" }
+slo-macros = { path = "slo-macros" }
+
+[dev-dependencies]
+semlex = { path = "../../crates/semlex", features = ["testing"] }
+
+[lints]
+workspace = true

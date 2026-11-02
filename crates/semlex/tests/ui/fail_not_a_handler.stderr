@@ -1,0 +1,44 @@
+error[E0425]: cannot find value `__MARK_THIS_MODULE_WITH_SEMLEX_HANDLER` in module `crate::plain`
+ --> tests/ui/fail_not_a_handler.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: crate::plain, demo.slo: ignore } });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `crate::plain`
+  |
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find type `Kind` in module `crate::plain`
+ --> tests/ui/fail_not_a_handler.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: crate::plain, demo.slo: ignore } });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `crate::plain`
+  |
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find function `apply` in module `crate::plain`
+ --> tests/ui/fail_not_a_handler.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: crate::plain, demo.slo: ignore } });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `crate::plain`
+  |
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find function `check_literal` in module `crate::plain`
+ --> tests/ui/fail_not_a_handler.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: crate::plain, demo.slo: ignore } });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in `crate::plain`
+  |
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `semlex-unstable`
+ --> tests/ui/fail_not_a_handler.rs:1:1
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml", { annotations: { demo.case: crate::plain, demo.slo: ignore } });
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: expected values for `feature` are: `default`, `pii`, and `testing`
+  = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+  = help: try referring to `semlex::registry` crate for guidance on how handle this unexpected cfg
+  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+  = note: `#[warn(unexpected_cfgs)]` on by default
+  = note: this warning originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

@@ -1,0 +1,21 @@
+error[E0080]: evaluation panicked: `url.path` is unbounded (annotation `cardinality: unbounded`) and can't be an attribute of a metric
+  --> tests/compile_errors/09_unbounded_on_metric.rs:10:15
+   |
+10 |         extra(url.path): "/cart/42",
+   |               ^^^^^^^^ evaluation of `main::_` failed inside this call
+   |
+note: inside `url_path::check_bounded`
+  --> $RUST/core/src/panic.rs
+   |
+   |           $crate::panicking::panic_fmt($crate::const_format_args!($($t)+));
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here
+   |
+  ::: src/lib.rs
+   |
+   | / semlex::registry!("resolved.yaml", {
+   | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+   | |     scope_prefix: "shop.",
+...  |
+   | |     },
+   | | });
+   | |__- in this macro invocation

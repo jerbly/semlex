@@ -1,0 +1,12 @@
+# An unapproved `unregistered(…)` use: `just unregistered-policy-check`
+# expects clippy (with the repository's clippy.toml) to reject it.
+[package]
+name = "unregistered-denied"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[workspace]
+
+[dependencies]
+fixture-semconv = { path = "../../../tests/fixture-semconv" }

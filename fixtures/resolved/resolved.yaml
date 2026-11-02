@@ -1,0 +1,967 @@
+file_format: resolved/2.0
+schema_url: https://semlex.example/schemas/0.1.0
+attribute_catalog:
+- key: container.id
+  type: string
+  brief: Container ID.
+  stability: development
+- key: db.connection_string
+  type: string
+  brief: Deprecated, use `server.address` and `server.port`.
+  stability: development
+  deprecated:
+    reason: uncategorized
+    note: Replaced by `server.address` and `server.port`.
+- key: db.hbase.region
+  type: string
+  brief: HBase region name.
+  stability: development
+- key: db.jdbc.driver_classname
+  type: string
+  brief: Removed, no replacement at this time.
+  stability: development
+  deprecated:
+    reason: obsoleted
+    note: Removed, no replacement at this time.
+- key: db.namespace
+  type: string
+  brief: The HBase namespace.
+  note: For HBase this is the namespace, not a database.
+  stability: release_candidate
+  annotations:
+    cardinality: bounded
+- key: db.namespace
+  type: string
+  brief: The name of the database.
+  stability: release_candidate
+- key: db.operation
+  type: string
+  brief: Deprecated, use `db.operation.name` instead.
+  stability: development
+  deprecated:
+    reason: renamed
+    renamed_to: db.operation.name
+    note: Renamed.
+- key: db.operation.name
+  type: string
+  brief: The name of the operation being executed.
+  stability: release_candidate
+- key: db.system.name
+  type: string
+  examples:
+  - postgresql
+  - hbase
+  brief: The database management system.
+  stability: release_candidate
+- key: demo.cache.hit
+  type:
+    members:
+    - id: hit
+      value: true
+      brief: The cache had the entry.
+      stability: development
+    - id: miss
+      value: false
+      brief: The cache did not have the entry.
+      stability: development
+  brief: Cache outcome.
+  stability: development
+- key: demo.flags
+  type: boolean[]
+  brief: Feature flags evaluated for the request.
+  stability: development
+- key: demo.internal_debug
+  type: string
+  brief: Internal debug data; never emitted from code.
+  stability: development
+  annotations:
+    code_generation:
+      exclude: true
+- key: demo.label
+  type: template[string]
+  brief: Free-form labels, `<key>` being the label name.
+  stability: development
+- key: demo.match
+  type: string
+  brief: The matched rule.
+  stability: development
+  annotations:
+    code_generation:
+      rust:
+        ident: matched
+- key: demo.payload
+  type: any
+  brief: A structured payload. Only valid on log records.
+  stability: development
+- key: demo.retry.delays
+  type: int[]
+  brief: Delays between retries, in milliseconds.
+  stability: development
+- key: demo.tenant.code
+  type: string
+  brief: Short code identifying the tenant.
+  stability: stable
+  annotations:
+    demo:
+      case: upper
+- key: demo.tier
+  type:
+    members:
+    - id: free
+      value: free
+      brief: Free tier.
+      stability: stable
+    - id: pro
+      value: pro
+      brief: Paid tier.
+      stability: beta
+    - id: legacy
+      value: legacy
+      brief: Legacy paid tier.
+      stability: stable
+      deprecated:
+        reason: renamed
+        renamed_to: pro
+        note: Use `pro`.
+    - id: internal
+      value: internal
+      brief: Internal accounts.
+      stability: development
+      annotations:
+        code_generation:
+          exclude: true
+  brief: Service tier.
+  stability: beta
+  annotations:
+    code_generation:
+      rust:
+        enum_name: ServiceTier
+- key: demo.timeout
+  type: double
+  brief: Configured request timeout, in seconds.
+  stability: stable
+  annotations:
+    code_generation:
+      rust:
+        type: std::time::Duration
+- key: demo.type
+  type: string
+  brief: The kind of demo object.
+  stability: development
+- key: demo.weights
+  type: double[]
+  brief: Load-balancer weights.
+  stability: stable
+- key: exception.message
+  type: string
+  brief: The exception message.
+  stability: stable
+- key: exception.stacktrace
+  type: string
+  brief: A stacktrace as a string.
+  stability: stable
+- key: exception.type
+  type: string
+  brief: The type of the exception.
+  stability: stable
+- key: host.arch
+  type: string
+  brief: The CPU architecture of the host.
+  stability: development
+- key: host.name
+  type: string
+  brief: Name of the host.
+  stability: development
+- key: host.os.build
+  type: string
+  brief: OS build number (Windows hosts).
+  stability: development
+- key: http.method
+  type: string
+  brief: Deprecated, use `http.request.method` instead.
+  stability: stable
+  deprecated:
+    reason: renamed
+    renamed_to: http.request.method
+    note: Replaced by `http.request.method`.
+- key: http.request.body.size
+  type: int
+  brief: Size of the request body in bytes.
+  stability: development
+  annotations:
+    cardinality: unbounded
+- key: http.request.header
+  type: template[string[]]
+  examples:
+  - - application/json
+  brief: HTTP request headers, `<key>` being the normalized header name.
+  stability: stable
+- key: http.request.method
+  type:
+    members:
+    - id: connect
+      value: CONNECT
+      brief: CONNECT method.
+      stability: stable
+    - id: delete
+      value: DELETE
+      brief: DELETE method.
+      stability: stable
+    - id: get
+      value: GET
+      brief: GET method.
+      stability: stable
+    - id: post
+      value: POST
+      brief: POST method.
+      stability: stable
+    - id: put
+      value: PUT
+      brief: PUT method.
+      stability: stable
+    - id: query
+      value: QUERY
+      brief: QUERY method (draft).
+      stability: development
+    - id: other
+      value: _OTHER
+      brief: Any HTTP method not listed.
+      stability: stable
+  brief: HTTP request method.
+  stability: stable
+- key: http.request.resend
+  type: boolean
+  brief: Whether this is a resend of an earlier request.
+  stability: beta
+- key: http.response.status_code
+  type: int
+  examples:
+  - 200
+  - 404
+  brief: HTTP response status code.
+  stability: stable
+- key: http.route
+  type: string
+  examples:
+  - /users/{id}
+  brief: The matched route template.
+  stability: stable
+- key: http.server.sample_rate
+  type: double
+  brief: Fraction of requests sampled by the server.
+  stability: alpha
+- key: process.command_args
+  type: string[]
+  brief: All the command arguments.
+  stability: development
+- key: rpc.grpc.status_code
+  type:
+    members:
+    - id: ok
+      value: 0
+      brief: OK
+      stability: development
+    - id: cancelled
+      value: 1
+      brief: CANCELLED
+      stability: development
+    - id: unknown
+      value: 2
+      brief: UNKNOWN
+      stability: development
+  brief: Numeric gRPC status code.
+  stability: development
+- key: service.instance.id
+  type: string
+  brief: The string ID of the service instance.
+  stability: development
+- key: service.name
+  type: string
+  brief: Logical name of the service.
+  stability: stable
+- key: service.namespace
+  type: string
+  brief: A namespace for `service.name`.
+  stability: development
+- key: service.version
+  type: string
+  brief: The version string of the service.
+  stability: stable
+- key: session.id
+  type: string
+  brief: A unique id to identify a session.
+  stability: development
+- key: session.previous_id
+  type: string
+  brief: The previous session id.
+  stability: development
+- key: url.path
+  type: string
+  examples:
+  - /users/42
+  brief: The URI path component.
+  stability: stable
+  annotations:
+    cardinality: unbounded
+- key: url.path
+  type: string
+  examples:
+  - /users/42
+  brief: The URI path component.
+  note: On this span the path is normalized before recording, so it is bounded.
+  stability: stable
+  annotations:
+    cardinality: bounded
+- key: url.scheme
+  type: string
+  examples:
+  - https
+  brief: The URI scheme component.
+  stability: stable
+- key: url.template
+  type: string
+  examples:
+  - /users/{id}
+  brief: The low-cardinality template of the URL.
+  stability: release_candidate
+- key: user.email
+  type: string
+  brief: User email address.
+  stability: stable
+  annotations:
+    sensitivity: pii
+- key: user.id
+  type: string
+  brief: Unique identifier of the user.
+  stability: development
+  annotations:
+    cardinality: bounded
+- key: user.id
+  type: string
+  brief: Unique identifier of the user.
+  stability: development
+  annotations:
+    cardinality: unbounded
+    sensitivity: pii
+registry:
+  attributes:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+  - 26
+  - 27
+  - 28
+  - 29
+  - 30
+  - 31
+  - 32
+  - 33
+  - 34
+  - 35
+  - 36
+  - 37
+  - 38
+  - 39
+  - 40
+  - 41
+  - 42
+  - 43
+  - 45
+  - 46
+  - 47
+  - 49
+  attribute_groups:
+  - id: demo.legacy_db
+    attributes:
+    - base: 1
+      requirement_level: recommended
+    - base: 3
+      requirement_level: recommended
+    brief: Deprecated database connection attributes.
+    stability: development
+    deprecated:
+      reason: obsoleted
+      note: Use the database spans instead.
+  - id: exception
+    attributes:
+    - base: 21
+      requirement_level: required
+    - base: 22
+      requirement_level: recommended
+    - base: 23
+      requirement_level: required
+    brief: Attributes describing an exception.
+    stability: stable
+  spans:
+  - type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or the database-specific query summary.'
+    attributes:
+    - base: 5
+      requirement_level: required
+    - base: 6
+      requirement_level: recommended
+    - base: 7
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 8
+      requirement_level: required
+      sampling_relevant: true
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: A database client call.
+    stability: release_candidate
+  - type: demo.cache.lookup
+    kind: internal
+    name:
+      templates:
+      - pattern: cache lookup
+        attributes: []
+        parts:
+        - type: literal
+          value: cache lookup
+    attributes:
+    - base: 9
+      requirement_level: required
+    - base: 17
+      requirement_level: recommended
+    requirement_level: opt_in
+    brief: A cache lookup.
+    stability: development
+  - type: demo.legacy.request
+    kind: server
+    name:
+      templates:
+      - pattern: legacy request
+        attributes: []
+        parts:
+        - type: literal
+          value: legacy request
+    attributes:
+    - base: 30
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: Legacy request span.
+    stability: development
+    deprecated:
+      reason: renamed
+      renamed_to: http.server.request
+      note: Use `http.server.request`.
+  - type: http.server.request
+    kind: server
+    name:
+      templates:
+      - pattern: '{http.request.method} {http.route}'
+        attributes:
+        - http.request.method
+        - http.route
+        parts:
+        - type: attribute
+          attribute: http.request.method
+        - type: literal
+          value: ' '
+        - type: attribute
+          attribute: http.route
+      - pattern: '{http.request.method}'
+        attributes:
+        - http.request.method
+        parts:
+        - type: attribute
+          attribute: http.request.method
+      - pattern: HTTP
+        attributes: []
+        parts:
+        - type: literal
+          value: HTTP
+    attributes:
+    - base: 16
+      requirement_level: required
+    - base: 29
+      requirement_level: opt_in
+    - base: 30
+      requirement_level: required
+      sampling_relevant: true
+    - base: 31
+      requirement_level: recommended
+    - base: 32
+      requirement_level:
+        conditionally_required: If and only if one was received or sent.
+    - base: 33
+      requirement_level:
+        conditionally_required: If and only if it's available.
+    - base: 44
+      requirement_level: required
+    - base: 45
+      requirement_level: required
+      sampling_relevant: true
+    - base: 48
+      requirement_level:
+        recommended: When the user is authenticated.
+    entity_associations:
+    - all_of:
+      - type: service
+      - one_of:
+        - type: host
+        - type: container
+    requirement_level: recommended
+    brief: An HTTP request handled by a server.
+    stability: stable
+  metrics:
+  - name: demo.cache.fill_ratio
+    instrument: gauge
+    unit: '1'
+    attributes:
+    - base: 17
+      requirement_level: required
+    requirement_level: opt_in
+    brief: Fraction of the cache in use.
+    stability: development
+  - name: demo.internal.counter
+    instrument: counter
+    unit: '1'
+    requirement_level: recommended
+    brief: Internal counter; not emitted from code.
+    stability: development
+    annotations:
+      code_generation:
+        exclude: true
+  - name: http.server.active_requests
+    instrument: updowncounter
+    unit: '{request}'
+    attributes:
+    - base: 30
+      requirement_level: recommended
+    - base: 45
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: Number of active HTTP server requests.
+    stability: development
+  - name: http.server.request.count
+    instrument: counter
+    unit: '{request}'
+    attributes:
+    - base: 30
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of HTTP server requests.
+    stability: development
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - name: http.server.request.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 30
+      requirement_level: required
+    - base: 32
+      requirement_level:
+        conditionally_required: If and only if one was received or sent.
+    - base: 33
+      requirement_level: required
+    - base: 45
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Duration of HTTP server requests.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: double
+      demo:
+        slo:
+          objective: 0.99
+          latency: 0.5
+  events:
+  - name: demo.payload.received
+    attributes:
+    - base: 14
+      requirement_level: required
+    - base: 47
+      requirement_level: recommended
+    requirement_level: opt_in
+    brief: A structured payload was received.
+    stability: development
+  - name: session.start
+    attributes:
+    - base: 41
+      requirement_level: required
+    - base: 42
+      requirement_level:
+        conditionally_required: If a previous session existed.
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Indicates that a session has started.
+    stability: development
+  entities:
+  - type: container
+    identity:
+    - 0
+    requirement_level: recommended
+    brief: A container.
+    stability: development
+  - type: host
+    identity:
+    - 25
+    description:
+    - base: 24
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: A host.
+    stability: development
+  - type: service
+    identity:
+    - 37
+    - 38
+    - 39
+    description:
+    - base: 40
+      requirement_level: required
+    requirement_level: recommended
+    brief: A service instance.
+    stability: stable
+refinements:
+  spans:
+  - id: db.client
+    type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or the database-specific query summary.'
+    attributes:
+    - base: 5
+      requirement_level: required
+    - base: 6
+      requirement_level: recommended
+    - base: 7
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 8
+      requirement_level: required
+      sampling_relevant: true
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: A database client call.
+    stability: release_candidate
+  - id: db.hbase.client
+    type: db.client
+    kind: client
+    name:
+      note: '{db.operation.name} {db.namespace}, or the database-specific query summary.'
+    attributes:
+    - base: 2
+      requirement_level: required
+    - base: 4
+      requirement_level: required
+    - base: 6
+      requirement_level: recommended
+    - base: 7
+      requirement_level:
+        conditionally_required: If readily available.
+    - base: 8
+      requirement_level: required
+      sampling_relevant: true
+    requirement_level: recommended
+    brief: An HBase client call.
+    stability: release_candidate
+  - id: demo.cache.lookup
+    type: demo.cache.lookup
+    kind: internal
+    name:
+      templates:
+      - pattern: cache lookup
+        attributes: []
+        parts:
+        - type: literal
+          value: cache lookup
+    attributes:
+    - base: 9
+      requirement_level: required
+    - base: 17
+      requirement_level: recommended
+    requirement_level: opt_in
+    brief: A cache lookup.
+    stability: development
+  - id: demo.legacy.request
+    type: demo.legacy.request
+    kind: server
+    name:
+      templates:
+      - pattern: legacy request
+        attributes: []
+        parts:
+        - type: literal
+          value: legacy request
+    attributes:
+    - base: 30
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: Legacy request span.
+    stability: development
+    deprecated:
+      reason: renamed
+      renamed_to: http.server.request
+      note: Use `http.server.request`.
+  - id: http.server.request
+    type: http.server.request
+    kind: server
+    name:
+      templates:
+      - pattern: '{http.request.method} {http.route}'
+        attributes:
+        - http.request.method
+        - http.route
+        parts:
+        - type: attribute
+          attribute: http.request.method
+        - type: literal
+          value: ' '
+        - type: attribute
+          attribute: http.route
+      - pattern: '{http.request.method}'
+        attributes:
+        - http.request.method
+        parts:
+        - type: attribute
+          attribute: http.request.method
+      - pattern: HTTP
+        attributes: []
+        parts:
+        - type: literal
+          value: HTTP
+    attributes:
+    - base: 16
+      requirement_level: required
+    - base: 29
+      requirement_level: opt_in
+    - base: 30
+      requirement_level: required
+      sampling_relevant: true
+    - base: 31
+      requirement_level: recommended
+    - base: 32
+      requirement_level:
+        conditionally_required: If and only if one was received or sent.
+    - base: 33
+      requirement_level:
+        conditionally_required: If and only if it's available.
+    - base: 44
+      requirement_level: required
+    - base: 45
+      requirement_level: required
+      sampling_relevant: true
+    - base: 48
+      requirement_level:
+        recommended: When the user is authenticated.
+    entity_associations:
+    - all_of:
+      - type: service
+      - one_of:
+        - type: host
+        - type: container
+    requirement_level: recommended
+    brief: An HTTP request handled by a server.
+    stability: stable
+  metrics:
+  - id: demo.cache.fill_ratio
+    name: demo.cache.fill_ratio
+    instrument: gauge
+    unit: '1'
+    attributes:
+    - base: 17
+      requirement_level: required
+    requirement_level: opt_in
+    brief: Fraction of the cache in use.
+    stability: development
+  - id: demo.internal.counter
+    name: demo.internal.counter
+    instrument: counter
+    unit: '1'
+    requirement_level: recommended
+    brief: Internal counter; not emitted from code.
+    stability: development
+    annotations:
+      code_generation:
+        exclude: true
+  - id: http.server.active_requests
+    name: http.server.active_requests
+    instrument: updowncounter
+    unit: '{request}'
+    attributes:
+    - base: 30
+      requirement_level: recommended
+    - base: 45
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: Number of active HTTP server requests.
+    stability: development
+  - id: http.server.request.count
+    name: http.server.request.count
+    instrument: counter
+    unit: '{request}'
+    attributes:
+    - base: 30
+      requirement_level: required
+    requirement_level: recommended
+    brief: Number of HTTP server requests.
+    stability: development
+    annotations:
+      code_generation:
+        metric_value_type: int
+  - id: http.server.request.duration
+    name: http.server.request.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 30
+      requirement_level: required
+    - base: 32
+      requirement_level:
+        conditionally_required: If and only if one was received or sent.
+    - base: 33
+      requirement_level: required
+    - base: 45
+      requirement_level: recommended
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Duration of HTTP server requests.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: double
+      demo:
+        slo:
+          objective: 0.99
+          latency: 0.5
+  - id: http.server.request.duration.api
+    name: http.server.request.duration
+    instrument: histogram
+    unit: s
+    attributes:
+    - base: 16
+      requirement_level: required
+    - base: 30
+      requirement_level: required
+    - base: 32
+      requirement_level:
+        conditionally_required: If and only if one was received or sent.
+    - base: 33
+      requirement_level: required
+    - base: 45
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: Duration of HTTP API requests.
+    stability: stable
+    annotations:
+      code_generation:
+        metric_value_type: double
+      demo:
+        slo:
+          objective: 0.99
+          latency: 0.5
+  events:
+  - id: demo.payload.received
+    name: demo.payload.received
+    attributes:
+    - base: 14
+      requirement_level: required
+    - base: 47
+      requirement_level: recommended
+    requirement_level: opt_in
+    brief: A structured payload was received.
+    stability: development
+  - id: session.start
+    name: session.start
+    attributes:
+    - base: 41
+      requirement_level: required
+    - base: 42
+      requirement_level:
+        conditionally_required: If a previous session existed.
+    entity_associations:
+    - type: service
+    requirement_level: recommended
+    brief: Indicates that a session has started.
+    stability: development
+  - id: session.start.web
+    name: event.session.start.web
+    attributes:
+    - base: 41
+      requirement_level: required
+    - base: 42
+      requirement_level:
+        conditionally_required: If a previous session existed.
+    - base: 49
+      requirement_level: required
+    requirement_level: recommended
+    brief: A web session has started.
+    stability: development
+  entities:
+  - id: container
+    type: container
+    identity:
+    - 0
+    requirement_level: recommended
+    brief: A container.
+    stability: development
+  - id: host
+    type: host
+    identity:
+    - 25
+    description:
+    - base: 24
+      requirement_level: recommended
+    requirement_level: recommended
+    brief: A host.
+    stability: development
+  - id: host.windows
+    type: host
+    identity:
+    - 25
+    description:
+    - base: 24
+      requirement_level: recommended
+    - base: 26
+      requirement_level: required
+    requirement_level: recommended
+    brief: A Windows host.
+    stability: development
+  - id: service
+    type: service
+    identity:
+    - 37
+    - 38
+    - 39
+    description:
+    - base: 40
+      requirement_level: required
+    requirement_level: recommended
+    brief: A service instance.
+    stability: stable

@@ -1,0 +1,22 @@
+[package]
+name = "semlex-macros"
+description = "Proc-macro shim for semlex: registry!() and the call-site macros."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+# Publishable (examples aren't); not published yet.
+publish = true
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+readme = "../../README.md"
+license.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+semlex-expand.workspace = true
+
+[lints]
+workspace = true

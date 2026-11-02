@@ -1,0 +1,59 @@
+error[E0277]: missing required attribute `shop.tenant.code` on span `http.server.request`
+ --> tests/compile_errors/15_end_checks_required.rs:8:10
+  |
+8 |     end!(span, error: &e, error.type: "io");
+  |          ^^^^ `shop.tenant.code` is required here
+  |
+  = help: the trait `showcase::spans::http::server::request::Required_shop_tenant_code` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, shop.tenant.code: <value>)` before `end()`
+help: the trait `showcase::spans::http::server::request::Required_shop_tenant_code` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::http::server::request::Builder::<P0, P1, P2, P3, showcase::spans::http::server::request::Started>::end`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::end`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: missing required attribute `url.path` on span `http.server.request`
+ --> tests/compile_errors/15_end_checks_required.rs:8:10
+  |
+8 |     end!(span, error: &e, error.type: "io");
+  |          ^^^^ `url.path` is required here
+  |
+  = help: the trait `Required_url_path` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, url.path: <value>)` before `end()`
+help: the trait `Required_url_path` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::http::server::request::Builder::<P0, P1, P2, P3, showcase::spans::http::server::request::Started>::end`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, P3, Started>::end`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

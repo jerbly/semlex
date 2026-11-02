@@ -1,0 +1,35 @@
+error: use of deprecated constant `showcase::attr::shop::cart::size`: renamed to `shop.cart.item_count`
+ --> tests/compile_errors/12_renamed_attribute.rs:7:66
+  |
+7 |     event!(shop.order.placed { shop.order.id: "ord-1", shop.cart.size: 2 });
+  |                                                                  ^^^^
+  |
+note: the lint level is defined here
+ --> tests/compile_errors/12_renamed_attribute.rs:3:9
+  |
+3 | #![deny(warnings)]
+  |         ^^^^^^^^
+  = note: `#[deny(deprecated)]` implied by `#[deny(warnings)]`
+
+error[E0277]: `shop_cart_size` is not an attribute of event `shop.order.placed`
+ --> tests/compile_errors/12_renamed_attribute.rs:7:56
+  |
+7 |     event!(shop.order.placed { shop.order.id: "ord-1", shop.cart.size: 2 });
+  |                                                        ----^^^^^^^^^^
+  |                                                        |
+  |                                                        not an attribute of this event
+  |                                                        required by a bound introduced by this call
+  |
+  = help: the trait `showcase::events::shop::order::placed::With<shop_cart_size>` is not implemented for `showcase::events::shop::order::placed::Builder<Unset, Set>`
+  = note: event `shop.order.placed` defines: `shop.cart.item_count`, `shop.cart.skus`, `shop.order.id`, `shop.payment.method`. Use one of those, or add this attribute to the event in the registry (attribute types are named after their keys with `.` as `_`)
+note: required by a bound in `showcase::events::shop::order::placed::Builder::<P0, P1>::with`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1>::with`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

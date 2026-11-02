@@ -1,0 +1,41 @@
+error: annotation `demo.case` on attribute `demo.tenant.code` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.case` on attribute `demo.tenant.code` on metric `http.server.request.duration.api` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.case` on attribute `demo.tenant.code` on span `http.server.request` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.slo.latency` on metric `http.server.request.duration.api` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.slo.latency` on metric `http.server.request.duration` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.slo.objective` on metric `http.server.request.duration.api` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: annotation `demo.slo.objective` on metric `http.server.request.duration` isn't declared: add it to the `annotations` option of `registry!` as a `#[semlex::handler]` module or `ignore` (declared: none)
+ --> tests/ui/fail_undeclared_annotation.rs:1:19
+  |
+1 | semlex::registry!("../../../../fixtures/resolved/resolved.yaml");
+  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -1,0 +1,303 @@
+file_format: definition/2
+
+# Signals for the semlex fixture registry.
+
+attribute_groups:
+  # Internal: shared refinements, not present in the resolved registry.
+  - id: attributes.http.common
+    visibility: internal
+    attributes:
+      - ref: http.request.method
+        requirement_level: required
+      - ref: http.response.status_code
+        requirement_level:
+          conditionally_required: If and only if one was received or sent.
+
+  # Public: usable as `group exception { … }` in logs.
+  - id: exception
+    visibility: public
+    brief: Attributes describing an exception.
+    stability: stable
+    attributes:
+      - ref: exception.type
+        requirement_level: required
+      - ref: exception.message
+        requirement_level: required
+      - ref: exception.stacktrace
+
+  - id: demo.legacy_db
+    visibility: public
+    brief: Deprecated database connection attributes.
+    stability: development
+    deprecated:
+      reason: obsoleted
+      note: Use the database spans instead.
+    attributes:
+      - ref: db.connection_string
+      - ref: db.jdbc.driver_classname
+
+spans:
+  # name.templates, sampling_relevant, ref_group, reference-level annotations,
+  # requirement-level objects, entity_associations with nesting.
+  - type: http.server.request
+    kind: server
+    stability: stable
+    requirement_level: recommended
+    brief: An HTTP request handled by a server.
+    name:
+      templates:
+        - '{http.request.method} {http.route}'
+        - '{http.request.method}'
+        - HTTP
+    attributes:
+      - ref_group: attributes.http.common
+      # Inline ref takes precedence over the ref_group entry for the same key.
+      - ref: http.request.method
+        requirement_level: required
+        sampling_relevant: true
+      - ref: url.scheme
+        requirement_level: required
+        sampling_relevant: true
+      - ref: http.route
+        requirement_level:
+          conditionally_required: If and only if it's available.
+      # Required but not sampling-relevant: must be set before `end()`.
+      - ref: url.path
+        requirement_level: required
+        annotations:
+          cardinality: bounded
+        note: On this span the path is normalized before recording, so it is bounded.
+      - ref: user.id
+        requirement_level:
+          recommended: When the user is authenticated.
+        # Definition has {sensitivity: pii, cardinality: unbounded}: this tests
+        # whether Weaver merges reference annotations per key or replaces them.
+        annotations:
+          cardinality: bounded
+      - ref: http.request.header
+        requirement_level: opt_in
+      - ref: http.request.resend
+      - ref: demo.tenant.code
+        requirement_level: required
+    entity_associations:
+      - all_of:
+          - service
+          - one_of:
+              - host
+              - container
+
+  # name.note only: span! must take an explicit `name:`.
+  - type: db.client
+    kind: client
+    stability: release_candidate
+    requirement_level: recommended
+    brief: A database client call.
+    name:
+      note: '{db.operation.name} {db.namespace}, or the database-specific query summary.'
+    attributes:
+      - ref: db.system.name
+        requirement_level: required
+        sampling_relevant: true
+      - ref: db.namespace
+        requirement_level: required
+      - ref: db.operation.name
+        requirement_level:
+          conditionally_required: If readily available.
+      - ref: db.operation
+    entity_associations:
+      - service
+
+  # Signal-level opt_in, internal kind.
+  - type: demo.cache.lookup
+    kind: internal
+    stability: development
+    requirement_level: opt_in
+    brief: A cache lookup.
+    name:
+      templates:
+        - cache lookup
+    attributes:
+      - ref: demo.cache.hit
+        requirement_level: required
+      - ref: demo.tier
+
+  # Deprecated span.
+  - type: demo.legacy.request
+    kind: server
+    stability: development
+    requirement_level: recommended
+    brief: Legacy request span.
+    deprecated:
+      reason: renamed
+      renamed_to: http.server.request
+      note: Use `http.server.request`.
+    name:
+      templates:
+        - legacy request
+    attributes:
+      - ref: http.request.method
+
+span_refinements:
+  # Adds an attribute, overrides an inherited one (brief, note, annotations,
+  # requirement level), inherits the name.
+  - id: span.db.hbase.client
+    ref: db.client
+    brief: An HBase client call.
+    attributes:
+      - ref: db.hbase.region
+        requirement_level: required
+      - ref: db.namespace
+        requirement_level: required
+        brief: The HBase namespace.
+        note: For HBase this is the namespace, not a database.
+        annotations:
+          cardinality: bounded
+
+metrics:
+  # histogram, double (explicit), ref_group, unit `s`.
+  - name: http.server.request.duration
+    brief: Duration of HTTP server requests.
+    unit: s
+    instrument: histogram
+    stability: stable
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: double
+      # Structured: for hook tests (examples/advanced shows such a hook).
+      demo:
+        slo:
+          objective: 0.99
+          latency: 0.5
+    attributes:
+      - ref_group: attributes.http.common
+      - ref: http.route
+        requirement_level: required
+      - ref: url.scheme
+        requirement_level: recommended
+    entity_associations:
+      - service
+
+  # counter, int.
+  - name: http.server.request.count
+    brief: Number of HTTP server requests.
+    unit: '{request}'
+    instrument: counter
+    stability: development
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        metric_value_type: int
+    attributes:
+      - ref: http.request.method
+        requirement_level: required
+
+  # updowncounter, no metric_value_type (defaults to double).
+  - name: http.server.active_requests
+    brief: Number of active HTTP server requests.
+    unit: '{request}'
+    instrument: updowncounter
+    stability: development
+    requirement_level: recommended
+    attributes:
+      - ref: http.request.method
+      - ref: url.scheme
+
+  # gauge, signal-level opt_in.
+  - name: demo.cache.fill_ratio
+    brief: Fraction of the cache in use.
+    unit: '1'
+    instrument: gauge
+    stability: development
+    requirement_level: opt_in
+    attributes:
+      - ref: demo.tier
+        requirement_level: required
+
+  # Excluded from code generation.
+  - name: demo.internal.counter
+    brief: Internal counter; not emitted from code.
+    unit: '1'
+    instrument: counter
+    stability: development
+    requirement_level: recommended
+    annotations:
+      code_generation:
+        exclude: true
+
+metric_refinements:
+  - id: metric.http.server.request.duration.api
+    ref: http.server.request.duration
+    brief: Duration of HTTP API requests.
+    attributes:
+      - ref: demo.tenant.code
+        requirement_level: required
+
+events:
+  - name: session.start
+    brief: Indicates that a session has started.
+    stability: development
+    requirement_level: recommended
+    attributes:
+      - ref: session.id
+        requirement_level: required
+      - ref: session.previous_id
+        requirement_level:
+          conditionally_required: If a previous session existed.
+    entity_associations:
+      - service
+
+  # `any`-typed attribute: valid on log-based events.
+  - name: demo.payload.received
+    brief: A structured payload was received.
+    stability: development
+    requirement_level: opt_in
+    attributes:
+      - ref: demo.payload
+        requirement_level: required
+      - ref: user.email
+
+event_refinements:
+  - id: event.session.start.web
+    ref: session.start
+    brief: A web session has started.
+    attributes:
+      - ref: user.id
+        requirement_level: required
+
+entities:
+  - type: service
+    brief: A service instance.
+    stability: stable
+    requirement_level: recommended
+    identity:
+      - ref: service.name
+      - ref: service.namespace
+      - ref: service.instance.id
+    description:
+      - ref: service.version
+        requirement_level: required
+
+  - type: host
+    brief: A host.
+    stability: development
+    requirement_level: recommended
+    identity:
+      - ref: host.name
+    description:
+      - ref: host.arch
+
+  - type: container
+    brief: A container.
+    stability: development
+    requirement_level: recommended
+    identity:
+      - ref: container.id
+
+entity_refinements:
+  - id: entity.host.windows
+    ref: host
+    brief: A Windows host.
+    description:
+      - ref: host.os.build
+        requirement_level: required

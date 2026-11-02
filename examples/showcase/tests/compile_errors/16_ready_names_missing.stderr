@@ -1,0 +1,29 @@
+error[E0277]: missing required attribute `shop.order.id` on span `shop.orders.insert`
+ --> tests/compile_errors/16_ready_names_missing.rs:8:10
+  |
+8 |     span.ready()
+  |          ^^^^^ `shop.order.id` is required here
+  |
+  = help: the trait `showcase::spans::shop::orders::insert::Required_shop_order_id` is not implemented for `Unset`
+  = note: set it in `span!`, or with `record!(span, shop.order.id: <value>)` before `end()`
+help: the trait `showcase::spans::shop::orders::insert::Required_shop_order_id` is implemented for `Set`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^
+note: required by a bound in `showcase::spans::shop::orders::insert::Builder::<P0, P1, P2, showcase::spans::shop::orders::insert::Started>::ready`
+ --> src/lib.rs
+  |
+  | / semlex::registry!("resolved.yaml", {
+  | |     // Call sites' instrumentation scopes are `shop.<crate name>`.
+  | |     scope_prefix: "shop.",
+... |
+  | |     },
+  | | });
+  | |__^ required by this bound in `Builder::<P0, P1, P2, Started>::ready`
+  = note: this error originates in the macro `semlex::registry` (in Nightly builds, run with -Z macro-backtrace for more info)

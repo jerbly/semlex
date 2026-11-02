@@ -1,0 +1,15 @@
+error[E0425]: cannot find value `cod` in module `__semlex_attr::shop::tenant`
+ --> tests/compile_errors/01_misspelled_attribute.rs:7:21
+  |
+7 |         shop.tenant.cod: "ACME",
+  |                     ^^^
+  |
+ ::: src/lib.rs
+  |
+  | semlex::registry!("resolved.yaml", {
+  | ---------------------------------- similarly named constant `code` defined here
+  |
+help: a constant with a similar name exists
+  |
+7 |         shop.tenant.code: "ACME",
+  |                        +
