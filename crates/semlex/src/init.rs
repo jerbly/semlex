@@ -214,6 +214,9 @@ where
         attributes: Vec<KeyValue>,
     ) {
         let mut record = self.create_log_record();
+        // The event's time. The SDK sets only `observed_timestamp`, which is
+        // meant for records a bridge receives from another logging system.
+        record.set_timestamp(std::time::SystemTime::now());
         record.set_event_name(event_name);
         if let Some((number, text)) = severity {
             record.set_severity_number(number);

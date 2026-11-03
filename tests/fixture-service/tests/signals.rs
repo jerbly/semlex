@@ -7,7 +7,7 @@ use opentelemetry::Context;
 use opentelemetry::logs::AnyValue;
 use opentelemetry::trace::{SpanContext, SpanId, TraceContextExt, TraceFlags, TraceId, TraceState};
 use opentelemetry_sdk::metrics::data::{AggregatedMetrics, MetricData};
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 
 #[test]
 fn metrics_and_events_are_exported() {
@@ -18,6 +18,7 @@ fn metrics_and_events_are_exported() {
     fixture_service::record_cache_fill(0.4);
 
     let trace_id = TraceId::from_hex("4bf92f3577b34da6a3ce929d0e0e4736").unwrap();
+    let before = SystemTime::now();
     let cx = Context::current().with_remote_span_context(SpanContext::new(
         trace_id,
         SpanId::from_hex("00f067aa0ba902b7").unwrap(),
@@ -29,6 +30,7 @@ fn metrics_and_events_are_exported() {
         let _guard = cx.attach();
         fixture_service::start_session("s-42".into());
     }
+    let after = SystemTime::now();
 
     // The histogram: name, unit, description, value, attributes, scope.
     let exported = t.exported();
@@ -62,7 +64,7 @@ fn metrics_and_events_are_exported() {
     };
     assert_eq!(g.data_points().next().unwrap().value(), 0.4);
 
-    // The event: name, attributes, trace context.
+    // The event: name, attributes, trace context, time.
     let logs = t.logs.get_emitted_logs().unwrap();
     assert_eq!(logs.len(), 1);
     let record = &logs[0].record;
@@ -76,4 +78,6 @@ fn metrics_and_events_are_exported() {
         [("session.id".to_string(), AnyValue::String("s-42".into()))]
     );
     assert_eq!(record.trace_context().map(|tc| tc.trace_id), Some(trace_id));
+    let time = record.timestamp().expect("the event has a timestamp");
+    assert!(before <= time && time <= after, "{time:?}");
 }

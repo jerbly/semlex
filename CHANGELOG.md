@@ -23,6 +23,7 @@ First public version. Not yet published to crates.io.
 
 ### Runtime
 - `semlex::init(Config)` with tracer, meter and logger providers, opt-in signals and Resource entities. Libraries don't call `init`: spans and metrics follow OpenTelemetry's global providers, and events and exceptions fall back to `tracing` events.
+- Event and `exception` log records carry the event's `Timestamp`, not only the SDK's `ObservedTimestamp`.
 - `semlex::testing` (feature `testing`): in-memory telemetry and `assert_span!` / `assert_metric!` / `assert_event!`.
 
 ### Docs and examples

@@ -78,7 +78,8 @@ fn record_error_sets_the_same_status_and_event() {
 }
 
 /// The log-based `exception` event emitted in `span`'s context: its
-/// attributes as text, and its severity.
+/// attributes as text, and its severity. Checks that it has a timestamp,
+/// within the span's time.
 fn exception_event(
     t: &semlex::testing::Telemetry,
     span: &opentelemetry_sdk::trace::SpanData,
@@ -98,6 +99,8 @@ fn exception_event(
                 })
         })
         .expect("an `exception` log record in the span's context");
+    let time = record.timestamp().expect("the exception has a timestamp");
+    assert!(span.start_time <= time && time <= span.end_time, "{time:?}");
     let attributes = record
         .attributes_iter()
         .map(|(k, v)| {
