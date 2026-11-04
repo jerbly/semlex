@@ -1,0 +1,5 @@
+error: unknown severity `loud`; expected `trace`, `debug`, `info`, `warn`, `error` or `fatal`
+ --> tests/ui/fail_event_severity_unknown.rs:4:59
+  |
+4 |     event!(session.start { session.id: "s-1" }, severity: loud);
+  |                                                           ^^^^

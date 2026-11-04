@@ -966,18 +966,19 @@ fn signal_items(
                 pub const OPT_IN: bool = #opt_in;
                 impl<#(#params,)* C> Builder<#(#params,)* C> {
                     /// Emits the event with the attributes set (all required ones),
-                    /// in the current trace context.
+                    /// in the current trace context, with its severity if it has one.
                     pub fn emit(
                         self,
                         site: &'static ::semlex::__private::EventSite,
                         scope: &::semlex::__private::Scope,
+                        severity: ::core::option::Option<::semlex::__private::opentelemetry::logs::Severity>,
                         fallback: fn(&[::semlex::__private::opentelemetry::KeyValue]),
                     )
                     where
                         #unknown
                         #(#bounds,)*
                     {
-                        site.emit(EVENT_NAME, OPT_IN, scope, &ASSOCIATIONS, self.attributes, fallback);
+                        site.emit(EVENT_NAME, OPT_IN, scope, &ASSOCIATIONS, severity, self.attributes, fallback);
                     }
                 }
             }

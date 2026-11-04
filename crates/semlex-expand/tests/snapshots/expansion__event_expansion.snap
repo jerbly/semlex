@@ -29,6 +29,7 @@ fn f() {
             .emit(
                 &__SEMLEX_SITE,
                 &__SEMLEX_SCOPE,
+                ::core::option::Option::None,
                 |__semlex_attrs| {
                     #[allow(unused_imports)]
                     use __semlex_rt::{FieldKnown as _, FieldNone as _};

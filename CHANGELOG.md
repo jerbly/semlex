@@ -12,6 +12,7 @@ First public version. Not yet published to crates.io.
 
 ### Call-site macros
 - `span!` and `record!` with typestate spans: sampling-relevant attributes at start, required attributes before `end()`, names from the registry's templates. `record!(&span, …)` records in place; `key?: option` records only if `Some`.
+- `event!(name { … }, severity: warn)` sets the log record's severity (`trace` to `fatal`), and its `tracing` fallback's level.
 - `end!(span, error: …)` and `end!(span, result: …)` follow the error conventions: `error.type`, a log-based `exception` event and status `Error`.
 - `metric!`, `event!`, `entity!`, `attrs!` and the log macros (`info!`, `warn!` …).
 - Every attribute is checked against the registry: membership, value types, enum values (with "did you mean"), requirement levels, stability, deprecations, `cardinality: unbounded` on metrics and `sensitivity: pii` (`redacted(…)` / `hashed(…)`).
