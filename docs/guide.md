@@ -298,7 +298,7 @@ and trace context as one sent through semlex's logger. These differ:
 | | Through semlex's logger | Through the `tracing` bridge |
 |---|---|---|
 | Instrumentation scope | `<scope_prefix><crate>`, with its version and the registry's schema URL | the bridge's own scope: no crate, version or schema URL |
-| Severity | none for `event!`; `ERROR` for exceptions | `INFO` for `event!`; `ERROR` for exceptions |
+| Severity | `event!`'s `severity:`, or none; `ERROR` for exceptions | `event!`'s `severity:`, or `INFO`; `ERROR` for exceptions |
 | `target` | not set | the emitting module (`semlex::log` for exceptions) |
 | Array and `any` attributes | recorded | left out: `tracing` can't carry them |
 | Template and `unregistered(…)` attributes | recorded | left out of `event!`: their keys or types aren't fixed at compile time |
@@ -457,9 +457,12 @@ metric!(http.server.request.duration: elapsed, {
 
 ```rust
 event!(session.start { session.id: id });
+event!(session.start { session.id: id }, severity: warn);
 ```
 
-A log record with `event_name`, in the current trace context. It goes through
+A log record with `event_name`, in the current trace context. `severity:`
+sets the record's severity: `trace`, `debug`, `info`, `warn`, `error` or
+`fatal`. Without it the record has none. It goes through
 the logger provider given to `init`, or through the application's `tracing`
 bridge when there isn't one: see [Where telemetry goes](#where-telemetry-goes).
 Event refinements can't be emitted yet (Weaver doesn't record their base

@@ -949,7 +949,59 @@ pub fn metric(input: TokenStream) -> TokenStream {
     }}
 }
 
-/// `event!(name { key: value, … })`.
+/// An event's severity: the OpenTelemetry `Severity` variant set on its log
+/// record, and the `tracing` level of its fallback.
+struct EventSeverity {
+    severity: &'static str,
+    level: &'static str,
+}
+
+/// The optional `, severity: level` after an event's attributes. Without it
+/// the record has no severity, and the `tracing` fallback is `INFO`.
+fn event_severity(it: &mut Tokens) -> Result<Option<EventSeverity>, (Span, String)> {
+    let Some(first) = it.peek() else {
+        return Ok(None);
+    };
+    let usage = "expected `, severity: level` after the event's attributes";
+    let usage = (first.span(), usage.to_string());
+    let level = match (it.next(), it.next(), it.next(), it.next()) {
+        (Some(comma), Some(TokenTree::Ident(key)), Some(colon), Some(TokenTree::Ident(level)))
+            if is_punct(Some(&comma), ',') && key == "severity" && is_punct(Some(&colon), ':') =>
+        {
+            level
+        }
+        _ => return Err(usage),
+    };
+    if is_punct(it.peek(), ',') {
+        it.next();
+    }
+    if let Some(t) = it.next() {
+        return Err((
+            t.span(),
+            "unexpected input after the event's severity".into(),
+        ));
+    }
+    let (severity, level_name) = match level.to_string().as_str() {
+        "trace" => ("Trace", "TRACE"),
+        "debug" => ("Debug", "DEBUG"),
+        "info" => ("Info", "INFO"),
+        "warn" => ("Warn", "WARN"),
+        "error" => ("Error", "ERROR"),
+        "fatal" => ("Fatal", "ERROR"),
+        other => {
+            let msg = format!(
+                "unknown severity `{other}`; expected `trace`, `debug`, `info`, `warn`, `error` or `fatal`"
+            );
+            return Err((level.span(), msg));
+        }
+    };
+    Ok(Some(EventSeverity {
+        severity,
+        level: level_name,
+    }))
+}
+
+/// `event!(name { key: value, … } [, severity: level])`.
 pub fn event(input: TokenStream) -> TokenStream {
     let (krate, mut it) = split_krate(input);
     let name = match parse_dotted(&mut it) {
@@ -960,14 +1012,28 @@ pub fn event(input: TokenStream) -> TokenStream {
         Ok(e) => e,
         Err((span, msg)) => return error(span, &msg),
     };
-    if let Some(t) = it.next() {
-        return error(t.span(), "unexpected input after the event's attributes");
-    }
+    let event_severity = match event_severity(&mut it) {
+        Ok(s) => s,
+        Err((span, msg)) => return error(span, &msg),
+    };
     let at = name.span();
     let front = signal_front(&krate, "events", &name, &entries);
     let (rt, b) = (Ident::new("__semlex_rt", at), Ident::new("__semlex_b", at));
     let emit = Ident::new("emit", at);
     let group = group_path(&name);
+    let (severity, level) = match event_severity {
+        Some(EventSeverity { severity, level }) => {
+            let severity = Ident::new(severity, at);
+            (
+                quote_spanned!(at=> ::core::option::Option::Some(#rt::opentelemetry::logs::Severity::#severity)),
+                Ident::new(level, at),
+            )
+        }
+        None => (
+            quote_spanned!(at=> ::core::option::Option::None),
+            Ident::new("INFO", at),
+        ),
+    };
     // The `tracing` fallback (no logger provider): one field per registry key
     // known here, named after it, with its value read back from the event's
     // attributes. Template keys are only known at run time, and
@@ -988,12 +1054,12 @@ pub fn event(input: TokenStream) -> TokenStream {
     quote_spanned! {at=> {
         #front
         static __SEMLEX_SITE: #rt::EventSite = #rt::EventSite::new();
-        #b.#emit(&__SEMLEX_SITE, &__SEMLEX_SCOPE, |__semlex_attrs| {
+        #b.#emit(&__SEMLEX_SITE, &__SEMLEX_SCOPE, #severity, |__semlex_attrs| {
             #[allow(unused_imports)]
             use #rt::{FieldKnown as _, FieldNone as _};
             #rt::tracing::event!(
                 name: #group::EVENT_NAME,
-                #rt::tracing::Level::INFO,
+                #rt::tracing::Level::#level,
                 { #(#fields),* }
             );
         })

@@ -133,9 +133,9 @@ impl EventSite {
         }
     }
 
-    /// Emits the event through semlex's logger, or through `fallback` (the
-    /// call site's `tracing` event) when there's no logger provider. Nothing
-    /// for a disabled opt-in event.
+    /// Emits the event through semlex's logger, with `severity` if given, or
+    /// through `fallback` (the call site's `tracing` event, at the same level)
+    /// when there's no logger provider. Nothing for a disabled opt-in event.
     #[allow(clippy::too_many_arguments)]
     pub fn emit(
         &self,
@@ -143,6 +143,7 @@ impl EventSite {
         opt_in: bool,
         scope: &Scope,
         associations: &'static Associations,
+        severity: Option<opentelemetry::logs::Severity>,
         attributes: Vec<KeyValue>,
         fallback: fn(&[KeyValue]),
     ) {
@@ -160,7 +161,7 @@ impl EventSite {
             None
         };
         match logger {
-            Some(logger) => logger.emit_event(event_name, attributes),
+            Some(logger) => logger.emit_event(event_name, severity, attributes),
             None => {
                 if !self.observed.swap(true, Ordering::Relaxed) {
                     entity::observe(associations);

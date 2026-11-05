@@ -191,8 +191,13 @@ pub(crate) fn logger(scope: InstrumentationScope) -> Option<Box<dyn DynLogger>> 
 
 /// A type-erased logger that emits semlex events.
 pub(crate) trait DynLogger: Send + Sync {
-    fn emit_event(&self, event_name: &'static str, attributes: Vec<KeyValue>) {
-        self.emit_record(event_name, None, attributes);
+    fn emit_event(
+        &self,
+        event_name: &'static str,
+        severity: Option<opentelemetry::logs::Severity>,
+        attributes: Vec<KeyValue>,
+    ) {
+        self.emit_record(event_name, severity.map(|s| (s, s.name())), attributes);
     }
     /// An event log record, with a severity if given (e.g. `exception`).
     fn emit_record(
