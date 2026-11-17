@@ -25,7 +25,7 @@
 //! depends on `semlex`. The stable API is [`registry`],
 //! [`registry_with_hooks`], [`registry_from_env`], [`AnnotationHook`],
 //! [`Emit`] and the [`schema`] types; everything else is `semlex`'s own
-//! plumbing. See `docs/custom-macros.md`.
+//! plumbing. See [Custom macros](https://github.com/jerbly/semlex/blob/main/docs/custom-macros.md).
 
 mod annotations;
 mod callsite;

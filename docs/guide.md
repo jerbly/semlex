@@ -155,10 +155,10 @@ semlex::registry!("resolved.yaml", {
 
 ```toml
 [dependencies]
-semlex = "…"
+semlex = "0.1"
 
 [dev-dependencies]
-semlex = { version = "…", features = ["testing"] }
+semlex = { version = "0.1", features = ["testing"] }
 ```
 
 Call the macros as `crate::span!`, or import them: `use crate::{record,
@@ -187,7 +187,7 @@ changes.
 ```toml
 # checkout-semconv/Cargo.toml
 [dependencies]
-semlex = "…"
+semlex = "0.1"
 
 [features]
 # Allows non-stable registry items at call sites.

@@ -31,7 +31,7 @@ From that it emits `crate::slo::http::server::request::duration::{OBJECTIVE, LAT
 proc-macro = true
 
 [dependencies]
-semlex-expand = "…"   # the same version as your `semlex`
+semlex-expand = "0.1"   # the same version as your `semlex`
 quote = "1.0"
 ```
 
@@ -67,7 +67,7 @@ and still depends on `semlex` for the runtime and call-site macros:
 
 ```toml
 [dependencies]
-semlex = "…"
+semlex = "0.1"
 acme-macros = { path = "../acme-macros" }
 ```
 

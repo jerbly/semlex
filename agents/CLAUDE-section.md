@@ -8,7 +8,7 @@ Telemetry is defined in this crate's local semantic-convention registry
 (`registry/`, packaged into `resolved.yaml`), which pulls attributes from
 upstream registries such as OpenTelemetry semconv, and recorded only through
 the macros `registry!` generates (`crate::span!`, …). The compiler checks every call site against the
-registry. See `docs/guide.md` in semlex for the macros and their errors.
+registry. See the [semlex guide](https://github.com/jerbly/semlex/blob/main/docs/guide.md) for the macros and their errors.
 
 - **Look signals up before instrumenting.** Use the `weaver` MCP server
   (`search`, `get_span`, `get_metric`, `get_event`, `get_entity`,

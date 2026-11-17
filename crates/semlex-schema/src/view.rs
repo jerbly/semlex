@@ -1,6 +1,6 @@
 //! The effective view: what the rest of semlex consumes.
 //!
-//! Built from the raw [`model`](crate::model) by joining catalog indexes,
+//! Built from the raw [`model`] by joining catalog indexes,
 //! re-merging annotations (definition, then reference), dropping the base
 //! signals Weaver repeats in `refinements`, and normalizing types and
 //! requirement levels.

@@ -153,9 +153,8 @@ with rustc's exact output.
 It complements `weaver registry live-check`, which checks what reaches the
 wire, including telemetry semlex never sees.
 
-**Status:** pre-release and not yet published to crates.io (use a git or
-path dependency for now); built and tested against Weaver 0.28 and
-OpenTelemetry Rust 0.33. MSRV 1.89.
+**Status:** pre-1.0, so minor versions may break; built and tested against
+Weaver 0.28 and OpenTelemetry Rust 0.33. MSRV 1.89.
 
 ## Quick start
 
@@ -203,10 +202,10 @@ dependencies, so it stays small however large the upstreams are.
 
    ```toml
    [dependencies]
-   semlex = "…"
+   semlex = "0.1"
 
    [dev-dependencies]
-   semlex = { version = "…", features = ["testing"] }
+   semlex = { version = "0.1", features = ["testing"] }
    ```
 
    Several crates in one workspace can share a local registry instead: put

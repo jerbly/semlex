@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 (unreleased)
 
-First public version. Not yet published to crates.io.
+First public version.
 
 ### Registry input
 - `registry!("resolved.yaml", { … })` expands a Weaver V2 resolved registry (`weaver registry package --v2`, `resolved/2.0`) into Rust at compile time, with no generated files. The crate rebuilds when the file changes.

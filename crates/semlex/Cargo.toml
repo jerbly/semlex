@@ -4,7 +4,6 @@ description = "Compile-time OpenTelemetry semantic conventions for Rust, straigh
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
-# Publishable (examples aren't); not published yet.
 publish = true
 repository.workspace = true
 keywords.workspace = true
@@ -28,6 +27,11 @@ default = ["pii"]
 pii = ["dep:hmac", "dep:sha2"]
 # Telemetry assertion helpers (`semlex::testing`), with the OTel SDK's in-memory exporters.
 testing = ["dep:opentelemetry_sdk"]
+
+[package.metadata.docs.rs]
+# Document `semlex::testing` too, with each item's required feature shown.
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [dev-dependencies]
 trybuild = "1.0"

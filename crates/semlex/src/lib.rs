@@ -2,8 +2,8 @@
 //! your Weaver registry.
 //!
 //! This is the facade crate: it re-exports the macros, and holds the runtime
-//! traits and types that generated code and call sites use. The guide
-//! (`docs/guide.md`) covers setup and every macro.
+//! traits and types that generated code and call sites use. The
+//! [guide](https://github.com/jerbly/semlex/blob/main/docs/guide.md) covers setup and every macro.
 //!
 //! # `registry!`
 //!
@@ -112,7 +112,7 @@
 //! }
 //! ```
 //!
-//! Hooks a module leaves out default to no-ops. See `docs/annotations.md`.
+//! Hooks a module leaves out default to no-ops. See [Annotations](https://github.com/jerbly/semlex/blob/main/docs/annotations.md).
 //!
 //! PII attributes (`sensitivity: pii`) accept only `redacted(v)` or
 //! `hashed(v)` values; see [`pii`].
@@ -126,6 +126,8 @@
 //!     http.request.header("content-type"): vec!["text/plain"], // template attribute
 //! ];
 //! ```
+
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub use semlex_macros::{handler, registry};
 

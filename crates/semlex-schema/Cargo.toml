@@ -4,12 +4,11 @@ description = "Serde model of Weaver's resolved/2.0 registry and the effective-a
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
-# Publishable (examples aren't); not published yet.
 publish = true
 repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
-readme = "../../README.md"
+readme = "README.md"
 license.workspace = true
 
 [dependencies]
